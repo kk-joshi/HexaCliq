@@ -15,8 +15,8 @@ public class UserService {
     @Autowired
     IUserRepository userRepository;
     @Transactional
-    public User saveUser(User user) {
-        return userRepository.save(user);
+    public User saveUser(UserDto user) {
+        return userRepository.save(toEntity(user));
     }
 
     public Optional<UserDto> getUserByName(String userName) {
