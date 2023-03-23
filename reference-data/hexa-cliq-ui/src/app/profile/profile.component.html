@@ -1,0 +1,122 @@
+<div class="container bg-info rounded">
+    <div class="row justify-content-center justify-content-around">
+        <!-- non editable player -->
+        <div class="col-xl-5 col-lg-5 col-md-5 col-sm-12 bg-light m-3 p-3 rounded text-center">
+            <div class="img-move-wrapper" (click)="changePic()">
+                <img class="btn img-fluid d-md-block" alt="Hexa Cliq" [src]="userProfileImg" />
+                <img src="assets/upload.svg" class="col-2 btn img-move img-move-2 img-fluid">                
+            </div>
+            <br>
+            <div class="justify-content-start">
+                <b class="h1 text-primary text-uppercase">{{userDetails.fullName}}</b>
+                <br>
+                <img class="mr-3 pb-2" width="25" alt="Hexa Cliq" src="assets/email-24px.svg" />
+                <b class="h4">{{userDetails.email}}</b>
+                <br>
+                <img class="mr-3 pb-2" width="25" alt="Hexa Cliq" src="assets/flag-24px.svg" />
+                <b class="h4">{{userDetails.nationality}}</b>
+                <br>
+                <img class="mr-3 pb-2" width="25" alt="Hexa Cliq" src="assets/cake-24px.svg" />
+                <b class="h4 text-danger">{{userDetails.dob}}</b>
+            </div>
+            <br>
+        </div>
+        <!-- editable player -->
+        <div class="col-xl-5 col-lg-5 col-md-5 col-sm-12 bg-light m-3 p-3 rounded">
+            <div *ngIf="showAlert" #alert class="alert alert-warning alert-dismissible" role="alert">
+                <button type="button" class="close" aria-label="Close" (click)="closeAlert()">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <strong>Oops!!</strong> {{errorMsg}}
+            </div>
+
+            <div *ngIf="successResult" #alert class="alert alert-info alert-dismissible" role="alert">
+                <button type="button" class="close" aria-label="Close" (click)="closeSuccessAlert()">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                {{successResult}}
+            </div>
+            <h3 class="text-primary">Profile Details</h3>
+            <br>
+            <form>
+                <div class="form-group">
+                    <label for="mobileNo">Phone:</label> &nbsp; &nbsp;
+                    <select [(ngModel)]="userDetails.country" name="country">
+                        <option *ngFor="let country of countries" [value]="country.Value">
+                            {{country.Text}}
+                        </option>
+                    </select>
+                    <input class="form-control" type="tel" id="mobileNo" size="60" placeholder="Enter your phone number"
+                        name="mobileNo" [(ngModel)]="userDetails.mobileNo">
+                </div>
+                <div class="form-group">
+                    <label for="payPalAccountId">PayPal Account Id:</label>
+                    <input type="text" class="form-control" id="payPalAccountId"
+                        placeholder="Enter PayPal Account Id for Credit" name="payPalAccountId"
+                        [(ngModel)]="userDetails.payPalAccountId">
+                </div>
+                <div class="form-group">
+                    <label for="occupation">Occupation:</label>
+                    <input type="text" class="form-control" id="login-password" name="occupation"
+                        placeholder="What do you do?" [(ngModel)]="userDetails.occupation">
+                </div>
+                <div class="form-group">
+                    <label for="income">Income:</label>
+                    <input type="number" class="form-control" id="login-password" name="income"
+                        placeholder="Enter your monthly income" [(ngModel)]="userDetails.income">
+                </div>
+                <button (click)="updateProfile()" class="form-group btn btn-success btn-lg btn-block">Update</button>
+                <!-- <hr> -->
+                <!-- TODO work last prio -->
+                <!-- <button id="addAddress" class="form-group btn btn-secondary btn-lg btn-block" disabled>Addresses (coming soon)</button> -->
+                <!-- href="#" data-toggle="modal" data-target=".address-form" -->
+                <hr>
+                <a class="form-group btn btn-primary btn-lg btn-block" href="#" data-toggle="modal"
+                    data-target=".change-password-form">Change Password</a>
+            </form>
+        </div>
+    </div>
+    <!-- Change password prompt -->
+    <div class="modal fade  change-password-form" role="dialog">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <div class="modal-header bg-primary">
+                    <span class="text-white align-content-start">Change Password</span>
+                    <button id="passwordClose" type="button" class="close btn text-white" aria-label="Close"
+                        data-dismiss="modal">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form action="/">
+                        <div class="form-group">
+                            <label for="oldPassword">Old Password:</label>
+                            <input type="password" class="form-control" id="oldPassword"
+                                placeholder="Enter old password" [(ngModel)]="changePassword.oldPassword"
+                                name="oldPassword">
+                        </div>
+                        <div class="form-group">
+                            <label for="newPassword">New Password:</label>
+                            <input type="password" class="form-control" id="newPassword"
+                                placeholder="Enter new password" [(ngModel)]="changePassword.newPassword"
+                                name="newPassword">
+                        </div>
+                        <div class="form-group">
+                            <label for="confirmPassword">Confirm Password:</label>
+                            <input type="password" class="form-control" id="confirmPassword"
+                                placeholder="Re-enter new password" [(ngModel)]="changePassword.confirmPassword"
+                                name="confirmPassword">
+                        </div>
+                        <div *ngIf="passwordError" #alert class="alert alert-warning alert-dismissible" role="alert">
+                            {{passwordError}}
+                        </div>
+                        <button type="submit" class="form-group btn btn-primary btn-block"
+                            (click)="changeThePassword()">Change Password</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <input id="fileUploader" type="file" accept="image/*" style="display:none" (change)="onSelectFile($event)">
+</div>

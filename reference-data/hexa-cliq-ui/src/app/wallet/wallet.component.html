@@ -1,0 +1,149 @@
+<div class="container">
+    <div *ngIf="showAlert" #alert class="alert alert-warning alert-dismissible" role="alert">
+        <button type="button" class="close" aria-label="Close" (click)="closeAlert()">
+            <span aria-hidden="true">&times;</span>
+        </button>
+        <strong>Oops!!</strong> {{errorMsg}}
+    </div>
+    <div class="row bg-light p-4">
+        <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4">
+            <ul class="btn-light border border-primary" (click)="changeTab(true)"><b>Wallet Balance </b>
+                <br>({{currecySymbol}} {{walletDetails.availableBalance}})
+                <!-- <img class="align-self-end" width="40" alt="Hexa Cliq" src="assets/network_check-24px.svg" /> -->
+            </ul>
+            <ul class="btn-light border border-primary" (click)="changeTab(false)"> <b>All Transactions </b>
+                <br>({{walletDetails.transactionCount}})
+                <!-- <img class="align-self-end" width="40" alt="Hexa Cliq" src="assets/network_check-24px.svg" /> -->
+            </ul>
+        </div>
+        <div class="col-xl-8 col-lg-8 col-md-8 col-sm-8 bg-white border border-primary">
+            <div class="min-vh-30 justify-content-center text-center mt-3">
+                <div *ngIf="showWalletDetails">
+                    <img class="align-self-end" class="rounded-circle img-thumbnail" height="140vh" alt="Hexa Cliq"
+                        src="favicon.ico" />
+                    <h3>Hexa Cliq</h3>
+                    <span class="h1">{{currecySymbol}} {{walletDetails.availableBalance}}</span>
+                    <button class="btn btn-link text-danger" (click)="raiseDispute()">[Raise Dispute]</button>
+                    <div class="border border-warning rounded p-2 mb-3">
+                        <h4>Request for withdrawal of {{currecySymbol}} {{walletDetails.totalWithdrawnRequestAmount}} is
+                            in
+                            process</h4>
+                        <div class="btn btn-link" (click)="changeTab(false)">See more details here</div>
+                    </div>
+                    <div class="border rounded p-2 mb-3">
+                        <h4>Total widrawn amount {{currecySymbol}} {{walletDetails.totalWidrawnAmount}}</h4>
+                        <button class="btn btn-lg btn-success" data-toggle="modal" data-target=".withdraw-form">Withdraw
+                            Money</button>
+                        <br><small class="text-muted">(Min balance required {{currecySymbol}}
+                            {{walletDetails.minWidrawnAmount}})</small>
+                    </div>
+                </div>
+                <div *ngIf="!showWalletDetails" class="p-4">
+                    <div class="row p-4 justify-content-between">
+                        <b class="h5 align-middle">Total Earning</b>
+                        <b class="display-4">{{currecySymbol}} {{walletDetails.totalEarning}}</b>
+                    </div>
+                    <hr>
+                    <div class="row p-4 justify-content-between">
+                        <b class="h5 align-middle">Your Earning Rate</b>
+                        <div>
+                            <b class="display-4">{{currecySymbol}} {{creditAmtPerQuestion}}</b>
+                            <small class="text-muted align-bottom">(Per Each Hexa Cliq)</small>
+                        </div>
+                    </div>
+                    <hr>
+                    <h4 class="text-primary align-bottom">(Recent 10 Transactions)</h4>
+                    <br>
+                    <div *ngFor="let transaction of walletDetails.allTransactions">
+                        <div class="border border rounded border-primary mb-2 img-move-wrapper">
+                            <div *ngIf="isCredit(transaction)">
+                                <div class="badge badge-success img-move img-move-2 img-fluid">CREDIT</div>
+                            </div>
+                            <div *ngIf="!isCredit(transaction)">
+                                <div class="badge badge-secondary img-move img-move-2 img-fluid">DEBIT</div>
+                            </div>
+                            <span>Trnascation #: </span>
+                            <b class="h4"> {{transaction.id}}</b>
+                            <br>
+                            <span>Trnascation Amount: </span>
+                            <b class="h4"> {{currecySymbol}} {{transaction.amount}}</b>
+                            <br>
+                            <span>Wallet Balance: </span>
+                            <b> {{currecySymbol}} {{transaction.finalWalletBalance}}</b>
+                            <br>
+                            <span>Transaction Type: </span>
+                            <b> {{getTranactionDesc(transaction)}}</b>
+                            <br>
+                            <div *ngIf="canShowImage(transaction)">
+                                <button class="btn btn-link" data-toggle="modal" data-target=".show-hexa-cliq-form"
+                                    (click)="showImageInNewTab(transaction)">View
+                                    Hexa Cliq Image</button>
+                            </div>
+                            <br>
+                        </div>
+                    </div>
+                    <div *ngIf="walletDetails.transactionCount > 10">
+                        <button class="btn btn-primary" (click)="requestAllTransactions()">Request All
+                            Transactions</button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Show image dialog -->
+<div class="row modal fade show-hexa-cliq-form" role="dialog">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header bg-primary">
+                <span class="text-white align-content-start">Solved Hexa Cliq</span>
+                <button id="passwordClose" type="button" class="close btn text-white" aria-label="Close"
+                    data-dismiss="modal">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="text-center">
+                    <img alt="Hexa Cliq" [src]="captchaUrl" />
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row modal fade withdraw-form" role="dialog">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header bg-primary">
+                <span class="text-white align-content-start">Withdraw Money</span>
+                <button id="passwordClose" type="button" class="close btn text-white" aria-label="Close"
+                    data-dismiss="modal">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="text-center">
+                    <div *ngIf="withdrawErrorMsg" #alert class="alert alert-warning alert-dismissible" role="alert">
+                        <button type="button" class="close" aria-label="Close" (click)="closeAlert()">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        <strong>Oops!!</strong> {{withdrawErrorMsg}}
+                    </div>
+                    <div *ngIf="widthwalResult" #alert class="alert alert-info alert-dismissible" role="alert">
+                        <button type="button" class="close" aria-label="Close" (click)="closeSuccessAlert()">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        {{widthwalResult}}
+                    </div>
+                    Amount
+                    <form action="/">
+                        <input type="text" class="form-control  mb-2" id="withdrawAmount" name="withdrawAmount"
+                            [(ngModel)]="withdrawAmount">
+                        <button class="btn btn-success" (click)="requestWithdraw()">Raise Request!</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

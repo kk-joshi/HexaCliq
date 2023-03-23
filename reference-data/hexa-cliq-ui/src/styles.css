@@ -1,0 +1,19 @@
+/* You can add global styles to this file, and also import other style files */
+/* @import url(../node_modules/bootstrap/dist/css/bootstrap.min.css) */
+/* @import url(https://unpkg.com/bootstrap@4.1.0/dist/css/bootstrap.min.css) */
+.page-container {
+    min-height: 86vh;
+}
+
+.page-header {
+    min-height: 10vh;
+}
+
+.page-footer {
+    min-height: 4vh;
+}
+
+input:invalid {
+    border-color: #8b0000;
+    border-width: 3px;
+}

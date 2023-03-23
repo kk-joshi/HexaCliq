@@ -1,0 +1,132 @@
+<div class="container">
+    <div class="row">
+        <div *ngIf="errorMsg" #alert class="alert alert-warning alert-dismissible" role="alert">
+            {{errorMsg}}
+            <button type="button" class="close" aria-label="Close" (click)="closeAlert()">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    </div>
+    <div class="row">
+        <div *ngIf="successMsg" #alert class="alert alert-success alert-dismissible" role="alert">
+            {{successMsg}}
+            <button type="button" class="close" aria-label="Close" (click)="closeAlert()">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    </div>
+    <div class="m-3" *ngIf="profileDetails">
+        <div class="row">
+            <h2>Welcome <b>{{profileDetails.fullName}}</b></h2>
+        </div>
+        <br>
+        <div class="row justify-content-around"
+            *ngIf="!profileDetails.emailVerified || !profileDetails.payPalAccountId">
+            <div class="card border-danger mb-3" *ngIf="!profileDetails.emailVerified">
+                <div class="card-header bg-danger text-white">
+                    Verification Pending
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title">Verify your email address to start earning</h5>
+                    <a class="btn btn-info" (click)="sendVerificationMail()">Resend Verification Mail</a>
+                </div>
+            </div>
+            <div class="card border-danger mb-3" *ngIf="!profileDetails.payPalAccountId">
+                <div class="card-header bg-danger text-white">
+                    Update Profile
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title">Update your profile so you can withdraw your earning</h5>
+                    <a class="btn btn-info" routerLink="/profile">Go to Profile</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div *ngIf="walletDetails">
+        <div class="row m-3 align-items-center justify-content-around">
+            <div class="border col-xl-3 col-lg-3 col-md-3 col-sm-12 bg-white justify-content-center text-center">
+                <br>
+                <h3>Current Earning</h3>
+                <hr>
+                <h3 class="text-primary">{{walletDetails.availableBalance}}</h3>
+            </div>
+            <div class="col-xl-1 col-lg-1 col-md-1 col-sm-12 bg-white justify-content-center text-center">
+                <h3>+</h3>
+            </div>
+            <div class="border col-xl-3 col-lg-3 col-md-3 col-sm-12 bg-white justify-content-center text-center">
+                <br>
+                <h3>Total Withdrawal</h3>
+                <hr>
+                <h3 class="text-primary">{{walletDetails.totalWithdrawnRequestAmount + walletDetails.totalWidrawnAmount}}</h3>
+            </div>
+            <div class="col-xl-1 col-lg-1 col-md-1 col-sm-12 bg-white justify-content-center text-center">
+                <h3>=</h3>
+            </div>
+            <div class="border col-xl-3 col-lg-3 col-md-3 col-sm-12 bg-white justify-content-center text-center">
+                <br>
+                <h3>Total Earning</h3>
+                <hr>
+                <h3 class="text-primary">
+                    {{walletDetails.availableBalance + walletDetails.totalWithdrawnRequestAmount + walletDetails.totalWidrawnAmount}}
+                </h3>
+            </div>
+        </div>
+        <div class="row m-3 justify-content-between">
+            <a routerLink="/earn-money" class="col-xl-3 col-lg-3 col-md-3 col-sm-12 btn btn-primary btn-lg">Earn
+                More</a>
+            <a routerLink="/wallet-balance" class="col-xl-3 col-lg-3 col-md-3 col-sm-12 btn btn-link btn-lg">View all
+                earnings</a>
+        </div>
+    </div>
+    <br>
+    <hr>
+    <br>
+    <div class="row justify-content-around">
+        <div class="col-lg-3 col-12">
+            <p class="h2">Earn by inviting friends!</p>
+        </div>
+        <div class="col-lg-5 col-12">
+            <p>You can now earn money by referring your friend</p>
+            <p>Referral earning can be upto <b class="h1">{{getCurrecySymbol()}} {{getcreditRefferalAmount()}}</b>!!</p>
+        </div>
+        <div class="col-xl-3 col-lg-3 col-md-3 col-sm-12 align-self-center">
+            <button class="col-12 btn btn-primary btn-lg" data-toggle="modal" data-target=".referral-form">Refer A Friend</button>
+        </div>
+    </div>
+</div>
+
+<div class="row modal fade referral-form" role="dialog">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header bg-primary">
+                <span class="text-white align-content-start">Refer a friend</span>
+                <button id="referClose" type="button" class="close btn text-white" aria-label="Close"
+                    data-dismiss="modal" (click)="closeAlert()">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="text-center">
+                    <div *ngIf="referralErrorMsg" #alert class="alert alert-warning alert-dismissible" role="alert">
+                        <button type="button" class="close" aria-label="Close" (click)="closeReferralErrorAlert()">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        <strong>Oops!!</strong> {{referralErrorMsg}}
+                    </div>
+                    <div *ngIf="referralResult" #alert class="alert alert-info alert-dismissible" role="alert">
+                        <button type="button" class="close" aria-label="Close" (click)="closeReferralSuccessAlert()">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        {{referralResult}}
+                    </div>
+                    Email 
+                    <form action="/">
+                        <input type="text" class="form-control  mb-2" id="referralEmail" name="referralEmail"
+                            [(ngModel)]="referralEmail">
+                        <button class="btn btn-success" (click)="sendInvitation()">Send Invite!</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
