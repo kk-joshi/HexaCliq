@@ -1,0 +1,236 @@
+<div class="container justify-content-center align-content-center">
+
+    <div *ngIf="showAlert" #alert class="alert alert-warning alert-dismissible" role="alert">
+        <button type="button" class="close" aria-label="Close" (click)="closeAlert()">
+            <span aria-hidden="true">&times;</span>
+        </button>
+        <strong>Oops!!</strong> {{errorMsg}}
+    </div>
+
+    <div *ngIf="successResult" #alert class="alert alert-success alert-dismissible" role="alert">
+        <button type="button" class="close" aria-label="Close" (click)="closeSuccessAlert()">
+            <span aria-hidden="true">&times;</span>
+        </button>
+        {{successResult}}
+    </div>
+
+    <div class="row">
+        <div class="modal-dialog modal-lg vw-100">
+            <div class="modal-content">
+                <div class="p-2 bg-primary">
+                    <ul class="nav justify-content-center justify-content-around">
+                        <li><a id="loginId" class="btn btn-primary" data-toggle="tab" href="#login-form">Login</a></li>
+                        <li><a class="btn btn-primary active" data-toggle="tab" href="#registration-form">Register</a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="modal-body">
+                    <div class="tab-content">
+                        <div id="login-form" class="tab-pane fade">
+                            <form>
+                                <div class="form-group">
+                                    <label for="username">Username / Email:</label>
+                                    <input type="text" class="form-control" id="username"
+                                        placeholder="Enter username / email" name="username"
+                                        [(ngModel)]="loginDetails.username">
+                                </div>
+                                <div class="form-group">
+                                    <label for="password">Password:</label>
+                                    <input type="password" class="form-control" id="login-password" name="password"
+                                        placeholder="Enter password" [(ngModel)]="loginDetails.password">
+                                </div>
+                                <div class="form-group">
+                                    <a class="btn btn-link btn-sm" href="#" data-toggle="modal"
+                                        data-target=".forgot-password-form">Forgot Password</a>
+                                </div>
+                                <button (click)="login()" class="btn btn-success btn-block">Login</button>
+                            </form>
+                        </div>
+                        <div id="registration-form" class="tab-pane fade in active show">
+                            <form>
+                                <div class="form-group">
+                                    <label for="fullName">Full Name:</label>
+                                    <input type="text" class="form-control" id="fullName"
+                                        placeholder="Enter your full name" name="fullName"
+                                        [(ngModel)]="registrationDetails.fullName">
+                                </div>
+                                <div class="form-group">
+                                    <label for="mobileNo">Phone:</label> &nbsp; &nbsp;
+                                    <select [(ngModel)]="registrationDetails.country" name="country">
+                                        <option *ngFor="let country of countries" [value]="country.Value">
+                                            {{country.Text}}
+                                        </option>
+                                    </select>
+                                    <input class="form-control" type="tel" id="mobileNo" size="60"
+                                        placeholder="Enter your phone number" name="mobileNo"
+                                        [(ngModel)]="registrationDetails.mobileNo">
+                                </div>
+                                <div class="form-group">
+                                    <label for="email">Email:</label>
+                                    <input type="email" class="form-control" id="email" placeholder="Enter new email"
+                                        name="email" [(ngModel)]="registrationDetails.email">
+                                </div>
+                                <div class="form-group">
+                                    <label for="password">Password:</label>
+                                    <input type="password" class="form-control" id="password" placeholder="New password"
+                                        name="registrationDetails.password" [(ngModel)]="registrationDetails.password">
+                                </div>
+                                <div class="form-group">
+                                    <label for="birthdate">Birthdate:</label>
+                                    <input type="date" class="form-control" id="birthdate" name="birthdate"
+                                        max="{{registrationDetails.birthdate | date:'yyyy-MM-dd'}}"
+                                        [ngModel]="registrationDetails.birthdate | date:'yyyy-MM-dd'"
+                                        (ngModelChange)="registrationDetails.birthdate =$event">
+                                </div>
+                                <div class="m-3">
+                                    <input type="checkbox" id="terms" name="terms" [(ngModel)]="terms"> &nbsp; I accept
+                                    <a href="#terms-form" data-toggle="termsNCondition" data-target=".terms-form"></a>
+                                    <a class="form-group" href="#" data-toggle="modal" data-target=".terms-form">Terms
+                                        and conditions</a>
+                                </div>
+                                <button [disabled]="!terms" (click)="registerUser()"
+                                    class="btn btn-success btn-block">Register</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Forgot password -->
+<div class="modal fade  forgot-password-form" role="dialog">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header bg-primary">
+                <span class="text-white align-content-start">Reset Password</span>
+                <button id="passwordClose" type="button" class="close btn-primary text-white" aria-label="Close"
+                    data-dismiss="modal">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form action="/">
+                    <div class="form-group">
+                        <label for="usernameOrEmail">Username / Email:</label>
+                        <input type="text" class="form-control" id="usernameOrEmail"
+                            placeholder="Enter username / email" name="usernameOrEmail"
+                            [(ngModel)]="forgotPassword.usernameOrEmail">
+                    </div>
+                    <div class="form-group">
+                        <label for="dob">Birthdate:</label>
+                        <input type="date" class="form-control" id="dob" name="dob"
+                            [ngModel]="registrationDetails.birthdate | date:'yyyy-MM-dd'"
+                            (ngModelChange)="forgotPassword.birthdate =$event">
+                    </div>
+                    <div *ngIf="passwordError" #alert class="alert alert-warning alert-dismissible" role="alert">
+                        {{passwordError}}
+                    </div>
+                    <div *ngIf="passwordSuccess" #alert class="alert alert-success alert-dismissible" role="alert">
+                        {{passwordSuccess}}
+                    </div>
+                    <button type="submit" class="form-group btn btn-primary btn-block"
+                        (click)="requestForgotPassword()">Reset Password</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Terms & Conditions -->
+<div class="modal fade terms-form" role="dialog">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                Terms & Conditions
+                <button type="button" class="close text-white" aria-label="Close" data-dismiss="modal">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <br><b>1. Definitions</b><br>
+
+                Hexa Cliq (“HexaCliq" or the “Service”) is a manual Hexa Cliq solving service provided
+                through our Website which allows you to solve Hexa Cliq.
+                Hexa Cliq has employees, independent contractors, and representatives ("our Team").
+                As a customer of the Service, you're a “Member” of our employment according to this agreement.
+                These Terms of Use (“Terms,” along with our our API Guidelines) define the terms and conditions
+                under which you’re allowed to use our and how we’ll treat your account while you’re a
+                Member. If you have any questions about our terms, feel free to <a routerLink="/contact-us">contact
+                    us</a>.
+                <br>
+                <br><b>2. Eligibility</b><br>
+
+                In order to work with us, you must:
+                <ul>
+                    <li> be at least fifteen (15) years old and able to enter into contracts;
+                    </li>
+                    <li> complete the registration process;
+                    </li>
+                    <li> agree to the Terms; and
+                    </li>
+                    <li> provide true, complete, and up to date information.
+                    </li>
+                </ul>
+
+                By using our service, you represent and warrant that you meet all the requirements listed above,
+                and that you won’t use service in a way that violates any laws or regulations. We may
+                refuse service, close accounts of any users, and change eligibility requirements at any time.
+                <br>
+                <br><b>3. Term</b><br>
+
+                The Term begins when you sign up with us and continues as long as you use the Service.
+                Clicking the button and entering your username means that you’ve officially “signed” the
+                Terms.
+                <br>
+                <br><b>4. Compliance with Laws</b><br>
+
+                You represent and warrant that your use will comply with all applicable laws and
+                regulations. You’re responsible for determining whether our Services are suitable for you to
+                use in light of any regulations. You agree to indemnify and hold us harmless from any losses,
+                including attorney fees, that result from your breach of any part of these warranties.
+                <br>
+                <br><b>5. General Rules</b><br>
+
+                You promise to follow these rules:
+                <ul>
+                    <li>You will not share your unique ID with anyone, under any circumstances. This includes
+                        selling your account.</li>
+                    <li>You represent and warrant that your use will comply with all applicable laws
+                        and regulations.</li>
+                    <li>You agree that you won't modify, copy or recreate parts of any of our services
+                        without the explicit consent from us</li>
+                </ul>
+                If you violate any of these rules, then we may suspend or terminate your account.
+                <br>
+                <br><b>6. Force Majeure</b><br>
+
+                We won’t be held liable for any delays or failure in performance of any part of the Service,
+                from any cause beyond our control. This includes, but is not limited to, acts of God, changes to
+                law or regulations, embargoes, war, terrorist acts, riots, fires, earthquakes, nuclear accidents,
+                zombie apocalypse, floods, strikes, power blackouts, volcanic eruption, unusually severe weather
+                conditions, and acts of hackers or third-party internet service providers.
+                <br>
+                <br><b>7. Assignments</b><br>
+
+                You may not assign any of your rights under this agreement to anyone else. We may assign our
+                rights to any other individual or entity at our discretion.
+                <br>
+                <br><b>8. Disclaimers</b><br>
+
+                We and our Team aren’t responsible for the behavior of any linked websites, or
+                partners. The Service is only dedicated to research purposes.
+                <br>
+                <br>
+                Thank you for taking the time to learn about our policies.
+                <br>
+                <button class="btn btn-primary btn-lg text-white" aria-label="Close" data-dismiss="modal"
+                    (click)="agreedTerms()">
+                    I Agree
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

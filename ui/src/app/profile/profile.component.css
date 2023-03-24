@@ -1,0 +1,19 @@
+
+.img-move-wrapper {
+    position:relative;
+    overflow:hidden;
+    margin:0 auto;
+  }
+  
+  
+  /* Overlap the images on tablets and up */
+  @media (min-width:769px) {
+      .img-move {
+      position:absolute;
+      width:55%;
+    }
+    .img-move-2 {
+      right: 0;  
+      bottom:0;
+    }
+  }

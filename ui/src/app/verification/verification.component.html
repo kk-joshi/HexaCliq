@@ -1,0 +1,17 @@
+<div class="container text-center">
+    <div>
+        <div *ngIf="errorMsg" #alert class="col-12 alert alert-warning alert-dismissible" role="alert">
+            <button type="button" class="close" aria-label="Close">
+            </button>
+            <strong>Oops!!</strong> {{errorMsg}}
+        </div>
+
+        <div *ngIf="successMsg" #alert class="col-12 alert alert-success alert-dismissible" role="alert">
+            <button type="button" class="close" aria-label="Close">
+            </button>
+            {{successMsg}}
+        </div>
+
+        <button class="btn btn-lg btn-link" routerLink="/login">Login</button>
+    </div>
+</div>

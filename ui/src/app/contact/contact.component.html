@@ -1,0 +1,49 @@
+<div class="container border">
+    <div class="row bg-light justify-content-center">
+        <h3>Send us your query</h3>
+    </div>
+    <div *ngIf="showAlert" #alert class="alert alert-warning alert-dismissible" role="alert">
+        <button type="button" class="close" aria-label="Close" (click)="closeAlert()">
+            <span aria-hidden="true">&times;</span>
+        </button>
+        <strong>Oops!!</strong> {{errorMsg}}
+    </div>
+
+    <div *ngIf="successResult" #alert class="alert alert-success alert-dismissible" role="alert">
+        <button type="button" class="close" aria-label="Close" (click)="closeSuccessAlert()">
+            <span aria-hidden="true">&times;</span>
+        </button>
+        {{successResult}}
+    </div>
+
+    <form>
+        <div class="form-group">
+            <label for="fullname">Full Name:</label>
+            <input type="text" class="form-control" id="fullname" placeholder="Enter your full name" name="fullName"
+                pattern="^\S+\s+\S+" [(ngModel)]="queryDetails.fullname">
+        </div>
+        <div class="form-group">
+            <label for="mobileNo">Phone:</label> &nbsp; &nbsp;
+            <select [(ngModel)]="queryDetails.country" name="country">
+                <option *ngFor="let country of countries" [value]="country.Value">
+                    {{country.Text}}
+                </option>
+            </select>
+            <input class="form-control" type="tel" id="mobileNo" size="60" placeholder="Enter your phone number"
+                name="mobileNo" pattern="[0-9]{10,}" [(ngModel)]="queryDetails.mobileNo">
+        </div>
+        <div class="form-group">
+            <label for="email">Email:</label>
+            <input type="email" class="form-control" id="email" placeholder="Enter new email" name="email"
+                [(ngModel)]="queryDetails.email">
+        </div>
+        <div class="form-group">
+            <label for="queryStr">Brief your query:</label>
+            <textarea class="form-control" id="queryStr" placeholder="Tell us your query" name="queryStr"
+                [(ngModel)]="queryDetails.queryStr" rows="5"></textarea>
+        </div>
+        <button (click)="sendQuery()" class="btn btn-lg btn-success">Send Query</button>
+    </form>
+    <br>
+    <br>
+</div>
