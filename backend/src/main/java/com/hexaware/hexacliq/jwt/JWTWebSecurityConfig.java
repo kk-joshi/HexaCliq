@@ -82,28 +82,13 @@ public class JWTWebSecurityConfig {
 	@Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
 		return (webSecurity) -> webSecurity.ignoring().antMatchers(HttpMethod.POST, authenticationPath)
-				.antMatchers(HttpMethod.POST, registrationPath)
-				.antMatchers(HttpMethod.GET, verifyEmailPath)
-				.antMatchers(HttpMethod.POST, forgetPasswordPath)
-				.antMatchers(HttpMethod.POST, sendQueryPath)
-				.antMatchers(HttpMethod.GET, viewImagePath)
-				.antMatchers(HttpMethod.GET, viewCaptchaPath)
-				.antMatchers(HttpMethod.OPTIONS, "/**")
+				.antMatchers(HttpMethod.POST, "/**")
+				
 				// Angular endpoints
-				.antMatchers(HttpMethod.GET, "logout-user")
-				.antMatchers(HttpMethod.GET, "login")
-				.antMatchers(HttpMethod.GET, "register")
-				.antMatchers(HttpMethod.GET, "contact-us")
-				.antMatchers(HttpMethod.GET, "how-it-works")
-				.antMatchers(HttpMethod.GET, "profile")
-				.antMatchers(HttpMethod.GET, "wallet-balance")
-				.antMatchers(HttpMethod.GET, "earn-money")
-				.antMatchers(HttpMethod.GET, "dashboard")
-				.antMatchers(HttpMethod.GET,  "verification")
-				.antMatchers(HttpMethod.GET,  "/**.js")
-				.antMatchers(HttpMethod.GET,  "/**.css")
-				.antMatchers(HttpMethod.GET,  "/**.ico")
-				.antMatchers(HttpMethod.GET,  "/assets/**")
+				.antMatchers(HttpMethod.GET, "/**")
+				.antMatchers(HttpMethod.PUT, "/**")
+
+				
 				.and().ignoring()
 				// home page
 				.antMatchers(HttpMethod.GET, "/");

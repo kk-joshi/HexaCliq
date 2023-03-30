@@ -9,7 +9,7 @@ public class AttendanceDto {
 
 	private String category;
 	
-	List<String> markedDates;
+	List<String> formattedDates;
 	
 	private Double hours;
 
@@ -30,12 +30,12 @@ public class AttendanceDto {
 		this.category = category;
 	}
 
-	public List<String> getMarkedDates() {
-		return markedDates;
+	public List<String> getFormattedDates() {
+		return formattedDates;
 	}
 
-	public void setMarkedDates(List<String> markedDates) {
-		this.markedDates = markedDates;
+	public void setFormattedDates(List<String> markedDates) {
+		this.formattedDates = markedDates;
 	}
 
 	public Double getHours() {
