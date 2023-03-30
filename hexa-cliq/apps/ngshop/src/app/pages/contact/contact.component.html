@@ -1,0 +1,20 @@
+<div class="container border">
+    <div class="row bg-light justify-content-center">
+        <h3>Send us your query</h3>
+    </div>
+    <div *ngIf="showAlert" #alert class="alert alert-warning alert-dismissible" role="alert">
+        <button type="button" class="close" aria-label="Close" (click)="closeAlert()">
+            <span aria-hidden="true">&times;</span>
+        </button>
+        <strong>Oops!!</strong> {{errorMsg}}
+    </div>
+
+    <div *ngIf="successResult" #alert class="alert alert-success alert-dismissible" role="alert">
+        <button type="button" class="close" aria-label="Close" (click)="closeSuccessAlert()">
+            <span aria-hidden="true">&times;</span>
+        </button>
+        {{successResult}}
+    </div>
+    <br>
+    <br>
+</div>
