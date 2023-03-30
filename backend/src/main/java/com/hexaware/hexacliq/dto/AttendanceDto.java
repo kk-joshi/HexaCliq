@@ -7,7 +7,7 @@ public class AttendanceDto {
 	
 	private Integer userId;
 
-	private String categoryId;
+	private String category;
 	
 	List<String> markedDates;
 	
@@ -21,12 +21,13 @@ public class AttendanceDto {
 		this.userId = userId;
 	}
 
-	public String getCategoryId() {
-		return categoryId;
+	
+	public String getCategory() {
+		return category;
 	}
 
-	public void setCategoryId(String categoryId) {
-		this.categoryId = categoryId;
+	public void setCategory(String category) {
+		this.category = category;
 	}
 
 	public List<String> getMarkedDates() {

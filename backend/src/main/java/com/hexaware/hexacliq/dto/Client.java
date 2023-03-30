@@ -1,15 +1,14 @@
 package com.hexaware.hexacliq.dto;
 
 import java.util.Date;
+import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
-
-import lombok.Getter;
-import lombok.Setter;
 
 @Entity
 @Table(name = "client_master")
@@ -20,6 +19,9 @@ public class Client {
     
     @Column(name = "client_name")
     private String clientName;
+    
+    @OneToMany(mappedBy="client")
+    private Set<Project> projects;
     
     @Column(name = "email_address")
     private String emailAddress;

@@ -5,6 +5,8 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
@@ -20,6 +22,9 @@ public class Attendance {
     @Id
     @GeneratedValue
     private Integer attendanceId;
+    
+    @Column(name = "user_id")
+    private Integer userId;
     
     @Column(name = "attendance_name")
     private String attendanceName;
@@ -41,6 +46,22 @@ public class Attendance {
     
     @Column(name = "modified_by")
     private String modifiedBy;
+    
+    public enum CategoryEnum{
+    	HALF_DAY, FULL_DAY, EXTENDED_FULL_DAY, OVERTIME, LEAVE, HOLIDAY;
+    };
+
+    @Enumerated(EnumType.ORDINAL)
+    private CategoryEnum category;
+    
+    
+	public CategoryEnum getCategory() {
+		return category;
+	}
+
+	public void setCategory(CategoryEnum category) {
+		this.category = category;
+	}
 
 	public Integer getProjectId() {
 		return attendanceId;
@@ -89,6 +110,46 @@ public class Attendance {
 
 	public void setModifiedBy(String modifiedBy) {
 		this.modifiedBy = modifiedBy;
+	}
+
+	public Integer getAttendanceId() {
+		return attendanceId;
+	}
+
+	public void setAttendanceId(Integer attendanceId) {
+		this.attendanceId = attendanceId;
+	}
+
+	public Integer getUserId() {
+		return userId;
+	}
+
+	public void setUserId(Integer userId) {
+		this.userId = userId;
+	}
+
+	public String getAttendanceName() {
+		return attendanceName;
+	}
+
+	public void setAttendanceName(String attendanceName) {
+		this.attendanceName = attendanceName;
+	}
+
+	public LocalDate getMarkedDate() {
+		return markedDate;
+	}
+
+	public void setMarkedDate(LocalDate markedDate) {
+		this.markedDate = markedDate;
+	}
+
+	public Double getHours() {
+		return hours;
+	}
+
+	public void setHours(Double hours) {
+		this.hours = hours;
 	}
     
     
