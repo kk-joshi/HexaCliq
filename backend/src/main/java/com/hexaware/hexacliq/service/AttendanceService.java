@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -35,13 +36,11 @@ public class AttendanceService {
 		return null;
 	}
 
-	public List<String, List<LocalDate>> getMarkedAttendance(String userId, String month) {
+	public Map<String, List<LocalDate>> getMarkedAttendance(String userId, String month) {
 		String[] monthYear = month.split("/");
-		List<Attendace> attendaceList = attendanceRepository.findMonthAttendance(userId, monthYear[0], monthYear[1]);
+		List<Attendance> attendaceList = attendanceRepository.findMonthAttendance(userId, monthYear[0], monthYear[1]);
 //List<Att> atts = new ArrayList<>();
 //atts.stream().collect(Collectors.groupingBy(Att::getName, HashMap::new, Collectors.mapping(Att::getLocalDate, Collectors.toList())));
-
-		a
 		return null;
 	}
 
