@@ -1,6 +1,8 @@
 package com.hexaware.hexacliq.controller;
 
+import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -28,9 +30,9 @@ public class AttendanceController {
 	}
 	
 	@GetMapping("/getMarkedAttendance/{month}")
-	public ResponseEntity<String> getMarkedAttendance( @PathVariable("month") String month){
-		String response = attendanceService.getMarkedAttendance(month);
-		 return new ResponseEntity<String>(response,HttpStatus.CREATED);
+	public ResponseEntity<Map> getMarkedAttendance( @PathVariable("month") String month){
+		Map<String, List<LocalDate>> response = attendanceService.getMarkedAttendance("1",month);
+		 return new ResponseEntity<Map>(response,HttpStatus.CREATED);
 	}
 	
 }
