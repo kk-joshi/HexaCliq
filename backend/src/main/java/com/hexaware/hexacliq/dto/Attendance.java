@@ -47,7 +47,7 @@ public class Attendance {
     @Column(name = "modified_by")
     private String modifiedBy;
     
-    public enum CategoryEnum{
+    public enum CategoryEnum {
     	HALF_DAY, FULL_DAY, EXTENDED_FULL_DAY, OVERTIME, LEAVE, HOLIDAY;
     };
 

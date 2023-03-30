@@ -18,7 +18,6 @@ public class AttendanceService {
 	IAttendanceRepository attendanceRepository;
 
 	public String submitAttendance(List<AttendanceDto> attendancelist) {
-		
 		Attendance attendance= new Attendance();
 		for(AttendanceDto a:attendancelist) {
 			List<String> dateList= new ArrayList<>();
@@ -36,8 +35,13 @@ public class AttendanceService {
 		return null;
 	}
 
-	public String getMarkedAttendance(String month) {
-		
+	public List<String, List<LocalDate>> getMarkedAttendance(String userId, String month) {
+		String[] monthYear = month.split("/");
+		List<Attendace> attendaceList = attendanceRepository.findMonthAttendance(userId, monthYear[0], monthYear[1]);
+//List<Att> atts = new ArrayList<>();
+//atts.stream().collect(Collectors.groupingBy(Att::getName, HashMap::new, Collectors.mapping(Att::getLocalDate, Collectors.toList())));
+
+		a
 		return null;
 	}
 
