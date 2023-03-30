@@ -26,14 +26,15 @@ public class Attendance {
     @Column(name = "user_id")
     private Integer userId;
     
-    @Column(name = "attendance_name")
-    private String attendanceName;
-    
+	/*
+	 * @Column(name = "attendance_name") private String attendanceName;
+	 */
     @Column(name = "marked_date")
     private LocalDate markedDate;
     
-    @Column(name = "hours")
-    private Double hours;
+	/*
+	 * @Column(name = "hours") private Double hours;
+	 */
     
     @Column(name = "created_time")
     private Date createdTime;
@@ -41,13 +42,14 @@ public class Attendance {
     @Column(name = "modified_time")
     private Date modifiedTime;
     
-    @Column(name = "created_by")
-    private String createdBy;
+	/*
+	 * @Column(name = "created_by") private String createdBy;
+	 * 
+	 * @Column(name = "modified_by") private String modifiedBy;
+	 */
     
-    @Column(name = "modified_by")
-    private String modifiedBy;
-    
-    public enum CategoryEnum{
+
+    public enum CategoryEnum {
     	HALF_DAY, FULL_DAY, EXTENDED_FULL_DAY, OVERTIME, LEAVE, HOLIDAY;
     };
 
@@ -71,14 +73,12 @@ public class Attendance {
 		this.attendanceId = attendanceId;
 	}
 
-	public String getProjectName() {
-		return attendanceName;
-	}
-
-	public void setProjectName(String attendanceName) {
-		this.attendanceName = attendanceName;
-	}
-
+	/*
+	 * public String getProjectName() { return attendanceName; }
+	 * 
+	 * public void setProjectName(String attendanceName) { this.attendanceName =
+	 * attendanceName; }
+	 */
 	
 	public Date getCreatedTime() {
 		return createdTime;
@@ -96,22 +96,16 @@ public class Attendance {
 		this.modifiedTime = modifiedTime;
 	}
 
-	public String getCreatedBy() {
-		return createdBy;
-	}
-
-	public void setCreatedBy(String createdBy) {
-		this.createdBy = createdBy;
-	}
-
-	public String getModifiedBy() {
-		return modifiedBy;
-	}
-
-	public void setModifiedBy(String modifiedBy) {
-		this.modifiedBy = modifiedBy;
-	}
-
+	/*
+	 * public String getCreatedBy() { return createdBy; }
+	 * 
+	 * public void setCreatedBy(String createdBy) { this.createdBy = createdBy; }
+	 * 
+	 * public String getModifiedBy() { return modifiedBy; }
+	 * 
+	 * public void setModifiedBy(String modifiedBy) { this.modifiedBy = modifiedBy;
+	 * }
+	 */
 	public Integer getAttendanceId() {
 		return attendanceId;
 	}
@@ -128,13 +122,12 @@ public class Attendance {
 		this.userId = userId;
 	}
 
-	public String getAttendanceName() {
-		return attendanceName;
-	}
-
-	public void setAttendanceName(String attendanceName) {
-		this.attendanceName = attendanceName;
-	}
+	/*
+	 * public String getAttendanceName() { return attendanceName; }
+	 * 
+	 * public void setAttendanceName(String attendanceName) { this.attendanceName =
+	 * attendanceName; }
+	 */
 
 	public LocalDate getMarkedDate() {
 		return markedDate;
@@ -144,13 +137,10 @@ public class Attendance {
 		this.markedDate = markedDate;
 	}
 
-	public Double getHours() {
-		return hours;
-	}
-
-	public void setHours(Double hours) {
-		this.hours = hours;
-	}
-    
+	/*
+	 * public Double getHours() { return hours; }
+	 * 
+	 * public void setHours(Double hours) { this.hours = hours; }
+	 */
     
 }
