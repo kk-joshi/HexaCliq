@@ -10,7 +10,7 @@ import javax.persistence.*;
 public class User {
     @Id
     @GeneratedValue
-    private Integer userId;
+    private Long userId;
     @Column(name = "user_name")
     private String userName;
     @Column(name = "emp_id")
@@ -23,10 +23,10 @@ public class User {
     private String firstName;
     @Column(name = "last_name")
     private String lastName;
-	public Integer getUserId() {
+	public Long getUserId() {
 		return userId;
 	}
-	public void setUserId(Integer userId) {
+	public void setUserId(Long userId) {
 		this.userId = userId;
 	}
 	public String getUserName() {
