@@ -46,7 +46,7 @@ public class AttendanceService {
 		String[] monthYear = month.split("-");
 		List<Attendance> attendaceList = attendanceRepository.findMonthAttendance(userId, monthYear[0], monthYear[1]);
 		return attendaceList.stream().collect(Collectors.groupingBy(Attendance::getCategory, HashMap::new,
-				Collectors.mapping(Attendance::getMarkedDate, Collectors.toList()));
+				Collectors.mapping(Attendance::getMarkedDate, Collectors.toList())));
 	}
 
 }
