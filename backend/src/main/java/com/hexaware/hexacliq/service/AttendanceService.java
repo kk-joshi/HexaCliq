@@ -45,7 +45,7 @@ public class AttendanceService {
 	public Map<String, List<LocalDate>> getMarkedAttendance(Integer userId, String month) {
 		String[] monthYear = month.split("-");
 		List<Attendance> attendaceList = attendanceRepository.findMonthAttendance(userId, monthYear[0], monthYear[1]);
-		return attendaceList.stream().collect(Collectors.groupingBy(Attendance::getCategory, HashMap::new,
+		return attendaceList.stream().collect(Collectors.groupingBy(a -> String.valueOf(a.getCategory().ordinal()), HashMap::new,
 				Collectors.mapping(Attendance::getMarkedDate, Collectors.toList())));
 	}
 
