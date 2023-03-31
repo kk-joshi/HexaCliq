@@ -2,10 +2,8 @@ package com.hexaware.hexacliq.service;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -47,9 +45,8 @@ public class AttendanceService {
 	public Map<String, List<LocalDate>> getMarkedAttendance(Integer userId, String month) {
 		String[] monthYear = month.split("-");
 		List<Attendance> attendaceList = attendanceRepository.findMonthAttendance(userId, monthYear[0], monthYear[1]);
-//List<Att> atts = new ArrayList<>();
-//atts.stream().collect(Collectors.groupingBy(Att::getName, HashMap::new, Collectors.mapping(Att::getLocalDate, Collectors.toList())));
-		return null;
+		return attendaceList.stream().collect(Collectors.groupingBy(Attendance::getCategory, HashMap::new,
+				Collectors.mapping(Attendance::getMarkedDate, Collectors.toList()));
 	}
 
 }
