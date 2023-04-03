@@ -24,7 +24,7 @@ import com.hexaware.hexacliq.jwt.JwtUserDetails;
 
 
 @RestController
-@CrossOrigin(origins = "${allowed.origins}")
+@CrossOrigin(origins = "*")
 public class JwtAuthenticationRestController {
 
 	@Value("${jwt.http.request.header}")

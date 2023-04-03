@@ -14,10 +14,9 @@ import com.hexaware.hexacliq.dto.AttendanceDto;
 import com.hexaware.hexacliq.service.AttendanceService;
 
 @RestController
-@CrossOrigin(origins = "${allowed.origins}")
+@CrossOrigin(origins = "*")
 @RequestMapping("/attendance")
 public class AttendanceController {
-
 	@Autowired
 	AttendanceService attendanceService;
 	

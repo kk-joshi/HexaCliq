@@ -50,10 +50,10 @@ public class Attendance {
     
 
     public enum CategoryEnum {
-    	HALF_DAY, FULL_DAY, EXTENDED_FULL_DAY, OVERTIME, LEAVE, HOLIDAY;
-    };
+    	HALF_DAY, FULL_DAY, EXTENDED_FULL_DAY, OVERTIME, LEAVE, HOLIDAY
+	}
 
-    @Enumerated(EnumType.ORDINAL)
+	@Enumerated(EnumType.ORDINAL)
     private CategoryEnum category;
     
     
