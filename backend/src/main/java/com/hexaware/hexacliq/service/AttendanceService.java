@@ -1,55 +1,52 @@
 package com.hexaware.hexacliq.service;
 
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import com.hexaware.hexacliq.dao.IAttendanceRepository;
 import com.hexaware.hexacliq.dto.Attendance;
 import com.hexaware.hexacliq.dto.Attendance.CategoryEnum;
 import com.hexaware.hexacliq.dto.AttendanceDto;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.CrossOrigin;
+
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
-
 public class AttendanceService {
 
-	@Autowired
-	IAttendanceRepository attendanceRepository;
+    @Autowired
+    IAttendanceRepository attendanceRepository;
 
-	public String submitAttendance(AttendanceDto form) {
+    public String submitAttendance(AttendanceDto form) {
+        for (String s : form.getFormattedDates()) {
+            Attendance attendance = new Attendance();
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+            LocalDate localDate = LocalDate.parse(s, formatter);
+            attendance.setMarkedDate(localDate);
+            attendance.setUserId(2000080111);
+            attendance.setCreatedTime(new Date());
+            attendance.setModifiedTime(new Date());
+            attendance.setCategory(getCategoryBy(form.getCategory()));
+            attendanceRepository.save(attendance);
+        }
+        return "Attendance saved";
+    }
 
-		System.out.println(form.getCategory());
+    private CategoryEnum getCategoryBy(String category) {
+       try {
+           return CategoryEnum.valueOf(category);
+       } catch (Exception e) {
+           return Arrays.stream(CategoryEnum.values()).filter(c -> category.equals("" + c.ordinal())).findFirst().orElse(CategoryEnum.FULL_DAY);
+       }
+    }
 
-		List<String> dateList = new ArrayList<>();
-		dateList = form.getFormattedDates();
-		for (String s : dateList) {
-			Attendance attendance = new Attendance();
-			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-			String date = "16/08/2016";
-			// convert String to LocalDate
-			LocalDate localDate = LocalDate.parse(s, formatter);
-			attendance.setMarkedDate(localDate);
-			attendance.setUserId(2000080111);
-			attendance.setCreatedTime(new Date());
-			attendance.setModifiedTime(new Date());
-			attendance.setCategory(CategoryEnum.valueOf(form.getCategory()));
-			attendanceRepository.save(attendance);
-		}
-		return "Attendance saved";
-	}
-
-	public Map<String, List<LocalDate>> getMarkedAttendance(Integer userId, String month) {
-		String[] monthYear = month.split("-");
-		List<Attendance> attendaceList = attendanceRepository.findMonthAttendance(userId, monthYear[0], monthYear[1]);
-//List<Att> atts = new ArrayList<>();
-//atts.stream().collect(Collectors.groupingBy(Att::getName, HashMap::new, Collectors.mapping(Att::getLocalDate, Collectors.toList())));
-		return null;
-	}
+    public Map<String, List<LocalDate>> getMarkedAttendance(Integer userId, String month) {
+        String[] monthYear = month.split("-");
+        List<Attendance> attendaceList = attendanceRepository.findMonthAttendance(userId, monthYear[0], monthYear[1]);
+        return attendaceList.stream().collect(Collectors.groupingBy(a -> String.valueOf(a.getCategory().ordinal()), HashMap::new,
+                Collectors.mapping(Attendance::getMarkedDate, Collectors.toList())));
+    }
 
 }
