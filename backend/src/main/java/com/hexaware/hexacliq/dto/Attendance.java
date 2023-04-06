@@ -3,13 +3,7 @@ package com.hexaware.hexacliq.dto;
 import java.time.LocalDate;
 import java.util.Date;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -25,6 +19,9 @@ public class Attendance {
     
     @Column(name = "user_id")
     private Integer userId;
+
+	@OneToOne
+	private User user;
     
 	/*
 	 * @Column(name = "attendance_name") private String attendanceName;
@@ -48,11 +45,6 @@ public class Attendance {
 	 * @Column(name = "modified_by") private String modifiedBy;
 	 */
     
-
-    public enum CategoryEnum {
-    	HALF_DAY, FULL_DAY, EXTENDED_FULL_DAY, OVERTIME, LEAVE, HOLIDAY
-	}
-
 	@Enumerated(EnumType.ORDINAL)
     private CategoryEnum category;
     

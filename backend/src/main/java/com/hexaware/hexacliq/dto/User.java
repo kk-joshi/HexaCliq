@@ -10,6 +10,7 @@ import javax.persistence.*;
 public class User {
     @Id
     @GeneratedValue
+	@Column(name = "user_id")
     private Long userId;
     @Column(name = "user_name")
     private String userName;
@@ -66,6 +67,4 @@ public class User {
 	public void setLastName(String lastName) {
 		this.lastName = lastName;
 	}
-    
-    
 }
