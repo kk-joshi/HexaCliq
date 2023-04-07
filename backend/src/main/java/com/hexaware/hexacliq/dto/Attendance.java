@@ -1,9 +1,7 @@
 package com.hexaware.hexacliq.dto;
 
 import java.time.LocalDate;
-import java.util.Date;
-
-import javax.persistence.*;
+import jakarta.persistence.*;
 
 import lombok.Getter;
 import lombok.Setter;

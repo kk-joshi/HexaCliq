@@ -21,5 +21,4 @@ public interface IAttendanceRepository extends JpaRepository<Attendance, Integer
 
     @Query(value = GET_ALL_USER_DATA_FOR_MONTH, nativeQuery = true)
     List<Attendance> findAllUserMonthlyData(@Param("Month") String month);
-
 }

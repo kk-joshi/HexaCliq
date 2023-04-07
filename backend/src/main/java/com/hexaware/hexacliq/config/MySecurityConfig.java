@@ -15,7 +15,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -48,13 +47,13 @@ public class MySecurityConfig  {
                 .disable()
                 .cors()
                 .disable()
-//                .authorizeHttpRequests().requestMatchers(new R).permitAll()
-////                .authorizeHttpRequests().requestMatchers(API_Constants.GENERATE_TOKEN).permitAll()
-//                .requestMatchers(HttpMethod.OPTIONS).permitAll()
-//                .anyRequest().authenticated()
-//                .and()
+                .authorizeHttpRequests().requestMatchers(API_Constants.GENERATE_TOKEN, "/user/","/user/image/{userId}").permitAll()
+                .requestMatchers(HttpMethod.OPTIONS).permitAll()
+                .anyRequest().authenticated()
+                .and()
                 .exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+
 
         http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 

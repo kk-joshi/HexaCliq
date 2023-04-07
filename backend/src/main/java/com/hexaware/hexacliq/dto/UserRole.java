@@ -3,7 +3,7 @@ package com.hexaware.hexacliq.dto;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 
 @Getter
 @Setter
@@ -16,7 +16,7 @@ public class UserRole {
 	private Long userRoleId;
 	private String roleName;
 	
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
 	private User user;
 	
 	@ManyToOne

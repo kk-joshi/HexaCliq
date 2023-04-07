@@ -8,6 +8,7 @@ import com.hexaware.hexacliq.dto.UserDto;
 import com.hexaware.hexacliq.dto.UserRole;
 import com.hexaware.hexacliq.exception.UserFoundException;
 import com.hexaware.hexacliq.utils.Constants;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -15,7 +16,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import javax.transaction.Transactional;
+
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;

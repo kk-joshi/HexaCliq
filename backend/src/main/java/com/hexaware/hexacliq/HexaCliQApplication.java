@@ -37,18 +37,26 @@ public class HexaCliQApplication implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) throws Exception {
-		if(true) return;
-		getUsers().forEach( user -> {
-			Role role = roleRepository.getById(12L);
-			UserRole userRole = new UserRole();
-			userRole.setRole(role);
-			userRole.setUser(user);
-
-			Set<UserRole> userRoles = new HashSet<>(List.of(userRole));
-
-			User user1 = userService.creatUser(user, userRoles);
-			System.out.println("User Created "+ user1.getFirstName());
-		});
+//		User user1 = new User();
+//		user1.setUserName("KedarJ");
+//		user1.setFirstName("Kedar");
+//		user1.setLastName("Joshi");
+//		user1.setPassword(bCryptPasswordEncoder.encode("Kedar@123"));
+//		user1.setEmail("Kedark@hexaware.com");
+//		user1.setEnabled(true);
+//		user1.setProfile("CONSULTANT");
+//		user1.setPhone("9890406123");
+//		user1.setEmpId(72115);
+//		List.of(user1).forEach( user -> {
+//			Role role = roleRepository.getById(12L);
+//			UserRole userRole = new UserRole();
+//			userRole.setRole(role);
+//			userRole.setUser(user);
+//
+//			Set<UserRole> userRoles = new HashSet<>(List.of(userRole));
+//			User u = userService.creatUser(user, userRoles);
+//			System.out.println("User Created "+ u.getFirstName());
+//		});
 	}
 
 	private List<User> getUsers() {
