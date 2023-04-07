@@ -20,6 +20,8 @@ public class Attendance {
     @Column(name = "user_id")
     private Integer userId;
 
+
+
 	@OneToOne
 	private User user;
     

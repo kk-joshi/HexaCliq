@@ -1,70 +1,83 @@
 package com.hexaware.hexacliq.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
+@Getter
+@Setter
 @Entity
 @Table(name = "user_master")
-public class User {
-    @Id
-    @GeneratedValue
-	@Column(name = "user_id")
-    private Long userId;
-    @Column(name = "user_name")
-    private String userName;
-    @Column(name = "emp_id")
-    private long empId;
-    @Column(name = "email_address")
-    private String emailAddress;
-    @Column(name = "password")
-    private String password;
-    @Column(name = "first_name")
-    private String firstName;
-    @Column(name = "last_name")
-    private String lastName;
+public class User implements UserDetails {
 
-	public Long getUserId() {
-		return userId;
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	
+	public User(){
+		
 	}
-	public void setUserId(Long userId) {
-		this.userId = userId;
+	
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	@Column(name = "user_id")
+	private Long userId;
+	private String userName;
+	private String password;
+	private String firstName;
+	private String lastName;
+	private String email;
+	private String phone;
+	private boolean enabled= true;
+	private String profile;
+	private Integer empId;
+	
+	@Lob
+	@Column(columnDefinition = "MEDIUMBLOB")
+	private String imageData;
+	
+	@Transient
+	private boolean isPasswordMatch= false;
+	@OneToMany(cascade = CascadeType.ALL,fetch = FetchType.LAZY, mappedBy = "user")
+	@JsonIgnore
+	private Set<UserRole> userRoles = new HashSet<>();
+	
+	@Override
+	public Collection<? extends GrantedAuthority> getAuthorities() {
+		Set<Authority> set = new HashSet<>();
+		this.userRoles.forEach(ur ->{
+			set.add(new Authority(ur.getRole().getRoleName()));
+		});
+		return set;
 	}
-	public String getUserName() {
-		return userName;
+
+	@Override
+	public String getUsername() {
+		return this.userName;
 	}
-	public void setUserName(String userName) {
-		this.userName = userName;
+
+	@Override
+	public boolean isAccountNonExpired() {
+		return true;
 	}
-	public long getEmpId() {
-		return empId;
+
+	@Override
+	public boolean isAccountNonLocked() {
+		return true;
 	}
-	public void setEmpId(long empId) {
-		this.empId = empId;
+
+	@Override
+	public boolean isCredentialsNonExpired() {
+		return false;
 	}
-	public String getEmailAddress() {
-		return emailAddress;
-	}
-	public void setEmailAddress(String emailAddress) {
-		this.emailAddress = emailAddress;
-	}
-	public String getPassword() {
-		return password;
-	}
-	public void setPassword(String password) {
-		this.password = password;
-	}
-	public String getFirstName() {
-		return firstName;
-	}
-	public void setFirstName(String firstName) {
-		this.firstName = firstName;
-	}
-	public String getLastName() {
-		return lastName;
-	}
-	public void setLastName(String lastName) {
-		this.lastName = lastName;
-	}
+
 }
