@@ -6,17 +6,19 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import com.hexaware.hexacliq.dto.Attendance;
+import org.springframework.stereotype.Repository;
+
 import java.util.*;
 
+@Repository
 public interface IAttendanceRepository extends JpaRepository<Attendance, Integer> {
-    String GET_USER_DATA_FOR_MONTH = "Select * from attendance_master where user_id = :UserId and month(marked_date) = :Month and year(marked_date) = :Year";
-    String GET_ALL_USER_DATA_FOR_MONTH = "Select * from attendance_master where month(marked_date) = :Month and year(marked_date) = :Year";
+    String GET_USER_DATA_FOR_MONTH = "Select * from attendance_master where user_id = :UserId and month = :Month";
+    String GET_ALL_USER_DATA_FOR_MONTH = "Select * from attendance_master where month = :Month";
 
 
     @Query(value = GET_USER_DATA_FOR_MONTH, nativeQuery = true)
-    List<Attendance> findMonthlyAttendanceOfUser(@Param("UserId") Integer userId, @Param("Month") String month, @Param("Year") String year);
+    List<Attendance> findMonthlyAttendanceOfUser(@Param("UserId") Integer userId, @Param("Month") String month);
 
     @Query(value = GET_ALL_USER_DATA_FOR_MONTH, nativeQuery = true)
-    List<Attendance> findAllUserMonthlyData(@Param("Month") String month, @Param("Year") String year);
-
+    List<Attendance> findAllUserMonthlyData(@Param("Month") String month);
 }
