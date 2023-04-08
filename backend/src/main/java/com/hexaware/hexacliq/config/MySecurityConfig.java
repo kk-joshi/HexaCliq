@@ -21,7 +21,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @EnableWebSecurity
 @Configuration
 @EnableMethodSecurity
-public class MySecurityConfig  {
+public class MySecurityConfig {
 
     @Autowired
     private JwtAuthenticationEntryPoint unauthorizedHandler;
@@ -47,7 +47,7 @@ public class MySecurityConfig  {
                 .disable()
                 .cors()
                 .disable()
-                .authorizeHttpRequests().requestMatchers(API_Constants.GENERATE_TOKEN, "/user/","/user/image/{userId}").permitAll()
+                .authorizeHttpRequests().requestMatchers(API_Constants.GENERATE_TOKEN, "/user/", "/user/image/{userId}").permitAll()
                 .requestMatchers(HttpMethod.OPTIONS).permitAll()
                 .anyRequest().authenticated()
                 .and()

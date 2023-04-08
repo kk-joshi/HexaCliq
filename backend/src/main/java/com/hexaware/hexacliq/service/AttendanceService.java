@@ -24,6 +24,7 @@ public class AttendanceService {
 
     /**
      * Mark the attendance of the consultant.
+     *
      * @param attendanceDto -
      * @return
      */

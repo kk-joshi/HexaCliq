@@ -2,17 +2,18 @@ package com.hexaware.hexacliq.report;
 
 import com.hexaware.hexacliq.dto.Attendance;
 import com.hexaware.hexacliq.dto.CategoryEnum;
+import jakarta.servlet.ServletOutputStream;
+import jakarta.servlet.http.HttpServletResponse;
 import org.apache.poi.ss.usermodel.BorderStyle;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.XSSFColor;
 import org.apache.poi.xssf.usermodel.XSSFFont;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
-import jakarta.servlet.ServletOutputStream;
-import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -27,8 +28,8 @@ public class MonthlyReportExporter {
     private final String month;
     private final byte[] HEADER_COLOR1 = new byte[]{10, 125, 125};
     private final String[] headers = {"Employee ID", "Employee Name", "Project", "Location"};
-    List<LocalDate> dates;
     private final XSSFWorkbook workbook;
+    List<LocalDate> dates;
     private XSSFSheet sheet;
     private Map<Integer, LocalDate> dateMap;
 
@@ -61,7 +62,7 @@ public class MonthlyReportExporter {
         LocalDate toDate = getLastDayOfMonth(fromDate);
 
         List<LocalDate> dates = new ArrayList<>(31);
-        while (fromDate.equals(toDate)) {
+        while (toDate.isAfter(fromDate)) {
             dates.add(fromDate);
             fromDate = fromDate.plusDays(1);
         }
@@ -77,9 +78,16 @@ public class MonthlyReportExporter {
     }
 
     private void writeHeaderLine() {
+        sheet.addMergedRegion(CellRangeAddress.valueOf("A1:AO1"));
+        sheet.addMergedRegion(CellRangeAddress.valueOf("A2:AO2"));
         Row title = sheet.createRow(0);
         CellStyle titleStyle = workbook.createCellStyle();
         titleStyle.setFont(getTitleFont());
+        titleStyle.setFont(getHeaderFont());
+        titleStyle.setBorderBottom(BorderStyle.DOUBLE);
+        titleStyle.setBorderLeft(BorderStyle.DOUBLE);
+        titleStyle.setBorderRight(BorderStyle.DOUBLE);
+        titleStyle.setBorderBottom(BorderStyle.DOUBLE);
         createCell(title, 0, "Monthly Attendance Report for " + month, titleStyle);
 
         Row row = sheet.createRow(1);
@@ -92,6 +100,10 @@ public class MonthlyReportExporter {
 
         CellStyle dateStyle = workbook.createCellStyle();
         dateStyle.setFont(getHeaderFont());
+        dateStyle.setBorderBottom(BorderStyle.DOUBLE);
+        dateStyle.setBorderLeft(BorderStyle.DOUBLE);
+        dateStyle.setBorderRight(BorderStyle.DOUBLE);
+        dateStyle.setBorderBottom(BorderStyle.DOUBLE);
         dateStyle.setDataFormat(workbook.getCreationHelper().createDataFormat().getFormat(DATE_HEADER_FORMAT));
 
         AtomicInteger cnt = new AtomicInteger();
