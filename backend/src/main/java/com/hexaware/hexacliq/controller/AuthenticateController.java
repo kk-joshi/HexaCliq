@@ -55,9 +55,7 @@ public class AuthenticateController {
     }
 
     private void authenticate(String userName, String password) {
-
         try {
-
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(userName, password));
         } catch (DisabledException e) {
             log.error(Constants.USER_DISABLED + e.getMessage());

@@ -47,10 +47,12 @@ public class User implements UserDetails {
     }
 
     @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
+    public Collection<Authority> getAuthorities() {
         Set<Authority> set = new HashSet<>();
         this.userRoles.forEach(ur -> {
-            set.add(new Authority(ur.getRole().getRoleName()));
+            ur.getRole().getPrivileges().stream().map(Privileges::getName)
+                    .map(Authority::new)
+                    .forEach(set::add);
         });
         return set;
     }

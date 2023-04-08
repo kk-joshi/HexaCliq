@@ -9,7 +9,6 @@ import lombok.Setter;
 @Entity
 @Table(name = "user_role")
 public class UserRole {
-
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long userRoleId;

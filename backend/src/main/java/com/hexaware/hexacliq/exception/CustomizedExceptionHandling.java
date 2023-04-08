@@ -5,6 +5,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AuthorizationServiceException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -69,6 +70,17 @@ public class CustomizedExceptionHandling extends ResponseEntityExceptionHandler 
         List<String> details = new ArrayList<>();
         details.add(ex.getLocalizedMessage());
         var error = new ExceptionResponse(Constants.USER_NOT_FOUND, details);
+        error.setExcepion(ex.getClass().getSimpleName());
+        return new ResponseEntity<>(error, HttpStatus.UNAUTHORIZED);
+    }
+
+    @ExceptionHandler(AuthorizationServiceException.class)
+    public ResponseEntity<Object> authorizationServiceException(AuthorizationServiceException ex, WebRequest request,
+                                                                HttpServletResponse response) {
+        log.error("!!!!!!!!! Exception found User Data Not Found : {}", ex.getMessage());
+        List<String> details = new ArrayList<>();
+        details.add(ex.getLocalizedMessage());
+        var error = new ExceptionResponse(Constants.UNAUTHORIZED_SERVICE, details);
         error.setExcepion(ex.getClass().getSimpleName());
         return new ResponseEntity<>(error, HttpStatus.UNAUTHORIZED);
     }

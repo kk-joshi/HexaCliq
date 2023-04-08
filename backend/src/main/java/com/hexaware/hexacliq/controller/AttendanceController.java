@@ -23,13 +23,13 @@ public class AttendanceController {
     @PostMapping
     public ResponseEntity<String> submitAttendance(@RequestBody AttendanceDto form) {
         String response = attendanceService.submitAttendance(form);
-        return new ResponseEntity<String>(response, HttpStatus.CREATED);
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
     @GetMapping("/{month}")
     public ResponseEntity<Map> getMarkedAttendance(@PathVariable("month") String month, Principal principal) {
         Map<String, List<LocalDate>> response = attendanceService.getMarkedAttendance(2000080111, month);
-        return new ResponseEntity<Map>(response, HttpStatus.CREATED);
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
 }
