@@ -1,9 +1,8 @@
 package com.hexaware.hexacliq.dto;
 
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-
-import jakarta.persistence.*;
 
 @Getter
 @Setter
@@ -11,14 +10,14 @@ import jakarta.persistence.*;
 @Table(name = "user_role")
 public class UserRole {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	private Long userRoleId;
-	private String roleName;
-	
-	@ManyToOne(fetch = FetchType.EAGER)
-	private User user;
-	
-	@ManyToOne
-	private Role role;
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long userRoleId;
+    private String roleName;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    private User user;
+
+    @ManyToOne
+    private Role role;
 }

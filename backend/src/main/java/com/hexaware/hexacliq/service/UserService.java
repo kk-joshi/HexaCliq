@@ -3,10 +3,8 @@ package com.hexaware.hexacliq.service;
 import com.hexaware.hexacliq.dao.IUserRepository;
 import com.hexaware.hexacliq.dao.RoleRepository;
 import com.hexaware.hexacliq.dto.User;
-import com.hexaware.hexacliq.dto.User;
 import com.hexaware.hexacliq.dto.UserDto;
 import com.hexaware.hexacliq.dto.UserRole;
-import com.hexaware.hexacliq.exception.UserFoundException;
 import com.hexaware.hexacliq.utils.Constants;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.BeanUtils;
@@ -16,7 +14,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -25,6 +22,9 @@ import java.util.Set;
 public class UserService implements UserDetailsService {
     @Autowired
     IUserRepository userRepository;
+    @Autowired
+    private RoleRepository roleRepository;
+
     @Transactional
     public User saveUser(UserDto user) {
         return userRepository.save(toEntity(user));
@@ -41,9 +41,6 @@ public class UserService implements UserDetailsService {
         return usr.orElseThrow(() -> new UsernameNotFoundException(username));
     }
 
-    @Autowired
-    private RoleRepository roleRepository;
-
     public User creatUser(User user, Set<UserRole> userRoles) {
 
 //        User userLocal = this.userRepository.findByUserName(user.getUsername()).get();
@@ -52,13 +49,13 @@ public class UserService implements UserDetailsService {
 //            throw new UserFoundException();
 //        } else {
 
-            userRoles.forEach(rl -> {
-                roleRepository.save(rl.getRole());
-            });
+        userRoles.forEach(rl -> {
+            roleRepository.save(rl.getRole());
+        });
 
-            user.getUserRoles().addAll(userRoles);
+        user.getUserRoles().addAll(userRoles);
 
-            User userLocal = userRepository.save(user);
+        User userLocal = userRepository.save(user);
 
 //        }
         return userLocal;

@@ -26,60 +26,56 @@ import java.security.Principal;
 @RestController
 public class AuthenticateController {
 
-	@Autowired
-	private AuthenticationManager authenticationManager;
+    String password = null;
+    @Autowired
+    private AuthenticationManager authenticationManager;
+    @Autowired
+    private UserDetailsService userDetailsService;
+    @Autowired
+    private RoleRepository roleRepository;
+    @Autowired
+    private JwtUtil jwtUtil;
+    @Autowired
+    private BCryptPasswordEncoder bCryptPasswordEncoder;
 
-	@Autowired
-	private UserDetailsService userDetailsService;
-	
-	@Autowired
-	private RoleRepository roleRepository;
+    @PostMapping(API_Constants.GENERATE_TOKEN)
+    public ResponseEntity<?> generateToken(@RequestBody JwtRequest jwtRequest) {
+        try {
+            password = jwtRequest.getPassword();
+            authenticate(jwtRequest.getUsername(), jwtRequest.getPassword());
 
-	@Autowired
-	private JwtUtil jwtUtil;
-	
-	String password = null;
-	@Autowired
-	private BCryptPasswordEncoder bCryptPasswordEncoder;
-	
-	@PostMapping(API_Constants.GENERATE_TOKEN)
-	public ResponseEntity<?> generateToken(@RequestBody JwtRequest jwtRequest){
-		try {
-			password = jwtRequest.getPassword();
-			authenticate(jwtRequest.getUsername(), jwtRequest.getPassword());
-			
-		} catch (UsernameNotFoundException e) {
-			log.error(Constants.USER_NOT_FOUND + e.getMessage());
-			throw new UsernameNotFoundException(Constants.USER_NOT_FOUND);
-		}
-		UserDetails userDetails = this.userDetailsService.loadUserByUsername(jwtRequest.getUsername());
-		String token = this.jwtUtil.generateToken(userDetails);
-		log.info(Constants.TOKEN_SUCCESSFULL_GENERATED);
-		return ResponseEntity.ok(new JwtResponse(token));
-	}
-		
-	private void authenticate(String userName, String password) {
+        } catch (UsernameNotFoundException e) {
+            log.error(Constants.USER_NOT_FOUND + e.getMessage());
+            throw new UsernameNotFoundException(Constants.USER_NOT_FOUND);
+        }
+        UserDetails userDetails = this.userDetailsService.loadUserByUsername(jwtRequest.getUsername());
+        String token = this.jwtUtil.generateToken(userDetails);
+        log.info(Constants.TOKEN_SUCCESSFULL_GENERATED);
+        return ResponseEntity.ok(new JwtResponse(token));
+    }
 
-		try {
+    private void authenticate(String userName, String password) {
 
-			authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(userName, password));
-		} catch (DisabledException e) {
-			log.error(Constants.USER_DISABLED + e.getMessage());
-		} catch (BadCredentialsException e) {
-			log.error(Constants.INVALID_DETAILS + e.getMessage());
-		} catch (Exception e) {
-			log.error(Constants.EXCEPTION + e.getMessage());
-		}
-	}
-	
-	@GetMapping(API_Constants.CURRENT_USER)
-	public User getCurrentUser(Principal principal) {
-		User user = (User) this.userDetailsService.loadUserByUsername(principal.getName());	
-		Role role = this.roleRepository.findById(user.getUserId()).get();
-		UserRole us = new UserRole();
-		us.setRole(role);
-		user.getUserRoles().add(us);
-		user.setPasswordMatch(bCryptPasswordEncoder.matches(password, user.getPassword()));
-		return user;
-	}
+        try {
+
+            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(userName, password));
+        } catch (DisabledException e) {
+            log.error(Constants.USER_DISABLED + e.getMessage());
+        } catch (BadCredentialsException e) {
+            log.error(Constants.INVALID_DETAILS + e.getMessage());
+        } catch (Exception e) {
+            log.error(Constants.EXCEPTION + e.getMessage());
+        }
+    }
+
+    @GetMapping(API_Constants.CURRENT_USER)
+    public User getCurrentUser(Principal principal) {
+        User user = (User) this.userDetailsService.loadUserByUsername(principal.getName());
+        Role role = this.roleRepository.findById(user.getUserId()).get();
+        UserRole us = new UserRole();
+        us.setRole(role);
+        user.getUserRoles().add(us);
+        user.setPasswordMatch(bCryptPasswordEncoder.matches(password, user.getPassword()));
+        return user;
+    }
 }

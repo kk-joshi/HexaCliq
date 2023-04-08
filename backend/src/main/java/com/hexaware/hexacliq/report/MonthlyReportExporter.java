@@ -2,6 +2,8 @@ package com.hexaware.hexacliq.report;
 
 import com.hexaware.hexacliq.dto.Attendance;
 import com.hexaware.hexacliq.dto.CategoryEnum;
+import jakarta.servlet.ServletOutputStream;
+import jakarta.servlet.http.HttpServletResponse;
 import org.apache.poi.ss.usermodel.BorderStyle;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
@@ -11,8 +13,6 @@ import org.apache.poi.xssf.usermodel.XSSFFont;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
-import jakarta.servlet.ServletOutputStream;
-import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -27,8 +27,8 @@ public class MonthlyReportExporter {
     private final String month;
     private final byte[] HEADER_COLOR1 = new byte[]{10, 125, 125};
     private final String[] headers = {"Employee ID", "Employee Name", "Project", "Location"};
-    List<LocalDate> dates;
     private final XSSFWorkbook workbook;
+    List<LocalDate> dates;
     private XSSFSheet sheet;
     private Map<Integer, LocalDate> dateMap;
 
