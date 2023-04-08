@@ -13,8 +13,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AuthorizationServiceException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
@@ -22,7 +20,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
-import java.util.List;
 import java.util.Optional;
 
 @Slf4j
@@ -34,6 +31,18 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     @Autowired
     private JwtUtil jwtUtil;
+
+    private static void authorization(User user, String requestPath) {
+        Optional<Authority> grantedAuthority = user.getAuthorities().stream()
+                .filter(ga -> requestPath != null && requestPath.contains(ga.getAuthority()))
+                .findFirst();
+        if (grantedAuthority.isEmpty()) {
+            log.error("The user is not authorized to access a path - {}", requestPath);
+            throw new AuthorizationServiceException("The user is not authorized to access a path " + requestPath);
+        } else {
+            log.info("Permission granted for a path - {}", requestPath);
+        }
+    }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
@@ -71,17 +80,5 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             log.error(Constants.TOKEN_NOT_VALID);
         }
         filterChain.doFilter(request, response);
-    }
-
-    private static void authorization(User user, String requestPath) {
-        Optional<Authority> grantedAuthority = user.getAuthorities().stream()
-                .filter(ga -> requestPath != null && requestPath.contains(ga.getAuthority()))
-                .findFirst();
-        if(grantedAuthority.isEmpty()) {
-            log.error("The user is not authorized to access a path - {}", requestPath);
-            throw new AuthorizationServiceException("The user is not authorized to access a path "+ requestPath);
-        } else {
-            log.info("Permission granted for a path - {}", requestPath);
-        }
     }
 }
