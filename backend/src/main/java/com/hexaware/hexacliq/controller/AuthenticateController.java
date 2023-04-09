@@ -25,7 +25,6 @@ import java.security.Principal;
 @CrossOrigin("*")
 @RestController
 public class AuthenticateController {
-
     String password = null;
     @Autowired
     private AuthenticationManager authenticationManager;
@@ -69,10 +68,6 @@ public class AuthenticateController {
     @GetMapping(API_Constants.CURRENT_USER)
     public User getCurrentUser(Principal principal) {
         User user = (User) this.userDetailsService.loadUserByUsername(principal.getName());
-        Role role = this.roleRepository.findById(user.getUserId()).get();
-        UserRole us = new UserRole();
-        us.setRole(role);
-        user.getUserRoles().add(us);
         user.setPasswordMatch(bCryptPasswordEncoder.matches(password, user.getPassword()));
         return user;
     }
