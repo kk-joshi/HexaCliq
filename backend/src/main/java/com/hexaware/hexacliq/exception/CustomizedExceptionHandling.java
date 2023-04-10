@@ -3,6 +3,7 @@ package com.hexaware.hexacliq.exception;
 import com.hexaware.hexacliq.utils.Constants;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AuthorizationServiceException;
@@ -58,6 +59,17 @@ public class CustomizedExceptionHandling extends ResponseEntityExceptionHandler 
         log.error("!!!!!!!!! Exception found Data Not Found : {}", ex.getMessage());
         List<String> details = new ArrayList<>();
         details.add(ex.getLocalizedMessage());
+        var error = new ExceptionResponse(Constants.INVALID_REQUEST, details);
+        error.setExcepion(ex.getClass().getSimpleName());
+        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<Object> duplicateDataException(DataIntegrityViolationException ex, WebRequest request,
+                                                               HttpServletResponse response) {
+        log.error("!!!!!!!!! Duplicate data insert : {}", ex.getMessage());
+        List<String> details = new ArrayList<>();
+        details.add("Duplicate data submitted.");
         var error = new ExceptionResponse(Constants.INVALID_REQUEST, details);
         error.setExcepion(ex.getClass().getSimpleName());
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
