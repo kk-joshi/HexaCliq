@@ -4,6 +4,7 @@ import com.hexaware.hexacliq.dao.IAttendanceRepository;
 import com.hexaware.hexacliq.dto.Attendance;
 import com.hexaware.hexacliq.dto.AttendanceDto;
 import com.hexaware.hexacliq.dto.CategoryEnum;
+import com.hexaware.hexacliq.dto.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -34,7 +35,9 @@ public class AttendanceService {
             LocalDate localDate = LocalDate.parse(s, DATE_FORMATTER);
             attendance.setMarkedDate(localDate);
             attendance.setMonth(localDate.format(MONTH_FORMATTER));
-            attendance.setUserId(2000080111);
+            attendance.setUserId(attendanceDto.getUserId());
+            User user = new User();
+            user.setUserId(attendanceDto.getUserId());
             attendance.setCreatedTime(LocalDate.now());
             attendance.setModifiedTime(LocalDate.now());
             attendance.setCategory(CategoryEnum.getCategoryBy(attendanceDto.getCategory()));

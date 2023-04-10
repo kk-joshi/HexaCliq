@@ -9,7 +9,9 @@ import java.time.LocalDate;
 @Getter
 @Setter
 @Entity
-@Table(name = "attendance_master", indexes = @Index(columnList = "month"))
+@Table(name = "attendance_master",
+        indexes = { @Index(columnList = "month"), @Index(columnList = "user_id")},
+        uniqueConstraints = @UniqueConstraint(columnNames = {"user_id", "marked_date", "category"}))
 public class Attendance {
     @Id
     @GeneratedValue
@@ -17,7 +19,6 @@ public class Attendance {
 
     @Column(name = "user_id")
     private Integer userId;
-
 
     @OneToOne
     private User user;

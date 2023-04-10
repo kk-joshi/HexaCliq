@@ -1,6 +1,5 @@
 package com.hexaware.hexacliq.config;
 
-import com.hexaware.hexacliq.dto.Authority;
 import com.hexaware.hexacliq.dto.User;
 import com.hexaware.hexacliq.service.UserService;
 import com.hexaware.hexacliq.utils.Constants;
@@ -20,7 +19,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
-import java.util.Optional;
 
 @Slf4j
 @Component
@@ -31,18 +29,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     @Autowired
     private JwtUtil jwtUtil;
-
-    private static void authorization(User user, String requestPath) {
-        Optional<Authority> grantedAuthority = user.getAuthorities().stream()
-                .filter(ga -> requestPath != null && requestPath.contains(ga.getAuthority()))
-                .findFirst();
-        if (grantedAuthority.isEmpty()) {
-            log.error("The user is not authorized to access a path - {}", requestPath);
-            throw new AuthorizationServiceException("The user is not authorized to access a path " + requestPath);
-        } else {
-            log.info("Permission granted for a path - {}", requestPath);
-        }
-    }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
@@ -74,11 +60,24 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 usernamePasswordAuthenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
                 String requestPath = request.getRequestURI();
-                authorization((User) userDetails, requestPath);
+                isOperationAllowed((User) userDetails, requestPath);
             }
         } else {
             log.error(Constants.TOKEN_NOT_VALID);
         }
+
         filterChain.doFilter(request, response);
+    }
+
+    private void isOperationAllowed(User user, String requestPath) {
+        user.getAuthorities().stream()
+                .filter(ga -> requestPath != null && requestPath.contains(ga.getAuthority())).findFirst()
+                .ifPresentOrElse(
+                        p -> log.info("Permission granted for a path - {}", requestPath),
+                        () -> {
+                            log.error("{} is not authorized to access a path - {}", user.getUsername(), requestPath);
+                            throw new AuthorizationServiceException("The user is not authorized to access a path " + requestPath);
+                        }
+                );
     }
 }
