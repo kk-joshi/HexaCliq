@@ -30,12 +30,12 @@ import static com.hexaware.hexacliq.utils.Constants.*;
 public class MonthlyReportExporter {
     private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("d-MMM");
 
-    private IUserRepository userRepository;
+    private final IUserRepository userRepository;
     private final Map<Integer, List<Attendance>> attendanceMap;
     private final String month;
     private final int[] counts = new int[CategoryEnum.values().length];
 
-    private final String[] headers = {"Employee ID", "Employee Name", "Project", "Location"};
+    private final String[] headers = {"Sr.","Employee ID", "Employee Name", "Project", "Location"};
     private final XSSFWorkbook workbook;
     private final AtomicInteger rowCount = new AtomicInteger();
     List<LocalDate> dates;
@@ -89,6 +89,7 @@ public class MonthlyReportExporter {
             dates.add(fromDate);
             fromDate = fromDate.plusDays(1);
         }
+        dates.add(toDate);
         dates.sort(Comparator.naturalOrder());
         return dates;
     }
@@ -130,19 +131,25 @@ public class MonthlyReportExporter {
     private void writeDataLines() {
         populateTextStyles();
         numericStyle = getNumericStyle();
+        CellStyle textStyle = getNumericStyle();
+        textStyle.setAlignment(HorizontalAlignment.LEFT);
+        textStyle.setIndention((short) 1);
 
+        AtomicInteger srNo = new AtomicInteger(1);
         attendanceMap.forEach((userId, attendanceData) -> {
             resetCounts();
             Row dataRow = sheet.createRow(rowCount.getAndIncrement());
             AtomicInteger colCount = new AtomicInteger();
             User user = userRepository.findById(userId).orElse(new User());
-            createCell(dataRow, colCount.getAndIncrement(), user.getEmpId(), textStyleMap.get(CategoryEnum.FULL_DAY));
-            createCell(dataRow, colCount.getAndIncrement(), user.getFirstName() + " " + user.getLastName(), textStyleMap.get(CategoryEnum.FULL_DAY));
-            createCell(dataRow, colCount.getAndIncrement(), "BR-Project"+ user.getUserId() , textStyleMap.get(CategoryEnum.FULL_DAY));
-            createCell(dataRow, colCount.getAndIncrement(), "Pune", textStyleMap.get(CategoryEnum.FULL_DAY));
+            createCell(dataRow, colCount.getAndIncrement(), srNo.getAndIncrement(), numericStyle);
+            createCell(dataRow, colCount.getAndIncrement(), user.getEmpId(), textStyle);
+            createCell(dataRow, colCount.getAndIncrement(), user.getFirstName() + " " + user.getLastName(), textStyle);
+            createCell(dataRow, colCount.getAndIncrement(), "{project name}" , textStyle);
+            createCell(dataRow, colCount.getAndIncrement(), "{location}", textStyle);
             dateMap.forEach((index, localDate) -> {
                 CategoryEnum category = attendanceData.stream().filter(a -> localDate.equals(a.getMarkedDate())).findAny().map(Attendance::getCategory).orElse(CategoryEnum.OTHER);
                 createCell(dataRow, colCount.getAndIncrement(), category.getShortName(), textStyleMap.get(category));
+                log.info("{} - {}", category.getShortName(),textStyleMap.get(category).getAlignment());
                 counts[category.ordinal()]++;
             });
             Arrays.stream(counts).forEach(count ->  createCell(dataRow, colCount.getAndIncrement(), count, numericStyle));
@@ -188,7 +195,7 @@ public class MonthlyReportExporter {
         dataStyle.setBorderLeft(BorderStyle.THIN);
         dataStyle.setBorderRight(BorderStyle.THIN);
         dataStyle.setBorderTop(BorderStyle.THIN);
-        dataStyle.setAlignment(HorizontalAlignment.CENTER);
+        dataStyle.setAlignment(HorizontalAlignment.RIGHT);
         return dataStyle;
     }
 
@@ -218,7 +225,7 @@ public class MonthlyReportExporter {
 
     private XSSFFont getDataLineFont(CategoryEnum category) {
         XSSFFont font = workbook.createFont();
-        font.setBold(true);
+        font.setBold(false);
         font.setFontHeight(10);
         font.setColor(category.getColor());
         return font;
@@ -226,24 +233,15 @@ public class MonthlyReportExporter {
 
     private void createCell(Row row, int columnCount, Object value, CellStyle style) {
         sheet.autoSizeColumn(columnCount);
-        Optional<CellStyle> custom = Optional.empty();
         Cell cell = row.createCell(columnCount);
         if (value instanceof Integer) {
             cell.setCellValue((Integer) value);
-            custom = Optional.of(workbook.createCellStyle());
-            custom.ifPresent(
-                    c -> {
-                        c.cloneStyleFrom(style);
-                        c.setAlignment(HorizontalAlignment.RIGHT);
-                    });
-            style.setAlignment(HorizontalAlignment.RIGHT);
         } else if (value instanceof Boolean) {
             cell.setCellValue((Boolean) value);
         } else {
             cell.setCellValue(String.valueOf(value));
         }
-        cell.setCellStyle(custom.orElse(style));
-        log.info("Writing a cell {} - {}", columnCount, value);
+        cell.setCellStyle(style);
     }
     static class IsWeekendQuery implements TemporalQuery<Boolean> {
         @Override

@@ -13,7 +13,7 @@ public enum CategoryEnum {
     LEAVE("EL", COLOR_MAROON),
     HOLIDAY("HD", COLOR_MAROON),
     FURLOUGH("FUR", COLOR_MAROON),
-    OTHER("--", COLOR_GRAY);
+    OTHER("x", COLOR_GRAY);
     private final String shortName;
     private final XSSFColor color;
 
