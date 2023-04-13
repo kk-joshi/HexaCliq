@@ -1,0 +1,56 @@
+
+<div>
+    <h2>Project Form</h2>    
+    <form [formGroup]="project_form" (ngSubmit)="onSubmit(projectform)" #projectform="ngForm">
+       
+        <div class="row">
+        <div class="col-sm-3 form-group">
+       
+        <label for="clientId">
+          Choose Client
+           </label>
+           <select  class="form-control" formControlName="clientId">>
+            <option *ngFor="let client of clientlist" [value]="client.clientId">
+                {{client.clientName}}
+            </option>
+        </select>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-3 form-group">
+        <label for="projectName">
+        Project Name
+        </label>
+        <input id="projectName"  class="form-control" type="text" formControlName="projectName">
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-3">
+        <label for="startDateValue">
+        Start Date
+        </label>
+        <mat-form-field appearance="fill">
+          <mat-label>Choose a date</mat-label>
+         <input matInput [matDatepicker]="startdate"  formControlName="startDateValue">
+         <mat-datepicker-toggle matSuffix [for]="startdate"></mat-datepicker-toggle>
+         <mat-datepicker #startdate></mat-datepicker>
+       </mat-form-field>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-3 form-group">
+        <label for="endDateValue">
+        End Date
+        </label>
+        <mat-form-field appearance="fill"> 
+          <mat-label>Choose a date</mat-label>
+            <input matInput [matDatepicker]="enddate" formControlName="endDateValue">            
+            <mat-datepicker-toggle matSuffix [for]="enddate"></mat-datepicker-toggle>
+            <mat-datepicker #enddate></mat-datepicker>
+        </mat-form-field>
+      </div>
+    </div>
+      <button type="submit" class="btn btn-success">Submit</button>
+    </form>
+    </div>
+    
