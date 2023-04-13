@@ -22,7 +22,7 @@ public class CustomizedExceptionHandling extends ResponseEntityExceptionHandler 
 
     @ExceptionHandler(UserFoundException.class)
     public ResponseEntity<?> exceptionHandler(UserFoundException ex) {
-        log.error("!!!!!!!!! Exception found user Found : {}", ex.getMessage());
+        log.error("!!!!!!!!! Exception found user Found : {}", ex.getMessage(), ex);
         List<String> details = new ArrayList<>();
         details.add(ex.getLocalizedMessage());
         var error = new ExceptionResponse(Constants.USER_ALREADY_REGISTER, details);
@@ -33,7 +33,7 @@ public class CustomizedExceptionHandling extends ResponseEntityExceptionHandler 
 
     @ExceptionHandler(UserNameFoundException.class)
     public ResponseEntity<?> exceptionHandler(UserNameFoundException ex) {
-        log.error("!!!!!!!!! Exception found user Found : {}", ex.getMessage());
+        log.error("!!!!!!!!! Exception found user Found : {}", ex.getMessage(), ex);
         List<String> details = new ArrayList<>();
         details.add(ex.getLocalizedMessage());
         var error = new ExceptionResponse(Constants.USER_NAME_ALREADY_EXIST, details);
@@ -44,7 +44,7 @@ public class CustomizedExceptionHandling extends ResponseEntityExceptionHandler 
 
     @ExceptionHandler(UserNotFoundException.class)
     public ResponseEntity<?> userNotExceptionHandler(UserNotFoundException ex) {
-        log.error("!!!!!!!!! Exception found user Not Found : {}", ex.getMessage());
+        log.error("!!!!!!!!! Exception found user Not Found : {}", ex.getMessage(), ex);
         List<String> details = new ArrayList<>();
         details.add(ex.getLocalizedMessage());
         var error = new ExceptionResponse(Constants.USER_NOT_FOUND, details);
@@ -56,7 +56,7 @@ public class CustomizedExceptionHandling extends ResponseEntityExceptionHandler 
     @ExceptionHandler(DataNotFoundException.class)
     public ResponseEntity<Object> dataNotFoundExceptionHandler(DataNotFoundException ex, WebRequest request,
                                                                HttpServletResponse response) {
-        log.error("!!!!!!!!! Exception found Data Not Found : {}", ex.getMessage());
+        log.error("!!!!!!!!! Exception found Data Not Found : {}", ex.getMessage(), ex);
         List<String> details = new ArrayList<>();
         details.add(ex.getLocalizedMessage());
         var error = new ExceptionResponse(Constants.INVALID_REQUEST, details);
@@ -67,7 +67,7 @@ public class CustomizedExceptionHandling extends ResponseEntityExceptionHandler 
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ResponseEntity<Object> duplicateDataException(DataIntegrityViolationException ex, WebRequest request,
                                                                HttpServletResponse response) {
-        log.error("!!!!!!!!! Duplicate data insert : {}", ex.getMessage());
+        log.error("!!!!!!!!! Duplicate data insert : {}", ex.getMessage(), ex);
         List<String> details = new ArrayList<>();
         details.add("Duplicate data submitted.");
         var error = new ExceptionResponse(Constants.INVALID_REQUEST, details);
@@ -78,7 +78,7 @@ public class CustomizedExceptionHandling extends ResponseEntityExceptionHandler 
     @ExceptionHandler(UsernameNotFoundException.class)
     public ResponseEntity<Object> userNameNotFoundExceptionHandler(UsernameNotFoundException ex, WebRequest request,
                                                                    HttpServletResponse response) {
-        log.error("!!!!!!!!! Exception found User Data Not Found : {}", ex.getMessage());
+        log.error("!!!!!!!!! Exception found User Data Not Found : {}", ex.getMessage(), ex);
         List<String> details = new ArrayList<>();
         details.add(ex.getLocalizedMessage());
         var error = new ExceptionResponse(Constants.USER_NOT_FOUND, details);
@@ -89,7 +89,7 @@ public class CustomizedExceptionHandling extends ResponseEntityExceptionHandler 
     @ExceptionHandler(AuthorizationServiceException.class)
     public ResponseEntity<Object> authorizationServiceException(AuthorizationServiceException ex, WebRequest request,
                                                                 HttpServletResponse response) {
-        log.error("!!!!!!!!! Exception found User Data Not Found : {}", ex.getMessage());
+        log.error("!!!!!!!!! Exception found User Data Not Found : {}", ex.getMessage(), ex);
         List<String> details = new ArrayList<>();
         details.add(ex.getLocalizedMessage());
         var error = new ExceptionResponse(Constants.UNAUTHORIZED_SERVICE, details);
@@ -100,7 +100,7 @@ public class CustomizedExceptionHandling extends ResponseEntityExceptionHandler 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Object> exceptionHandler(Exception ex, WebRequest request,
                                                    HttpServletResponse response) {
-        log.error("!!!!!!!!! Exception : {}", ex.getMessage());
+        log.error("!!!!!!!!! Exception : {}", ex.getMessage(), ex);
         List<String> details = new ArrayList<>();
         details.add(ex.getLocalizedMessage());
         var error = new ExceptionResponse(Constants.EXCEPTION + ex.getMessage(), details);
@@ -112,7 +112,7 @@ public class CustomizedExceptionHandling extends ResponseEntityExceptionHandler 
     @ExceptionHandler(ExpiredJwtTokenException.class)
     public ResponseEntity<Object> expiredJwtExceptionHandler(ExpiredJwtTokenException ex, WebRequest request,
                                                              HttpServletResponse response) {
-        log.error("!!!!!!!!! Exception Jwt Token Expired !!! : {}", ex.getMessage());
+        log.error("!!!!!!!!! Exception Jwt Token Expired !!! : {}", ex.getMessage(), ex);
         List<String> details = new ArrayList<>();
         details.add(ex.getLocalizedMessage());
         var error = new ExceptionResponse(Constants.JWT_TOKEN_EXPIRED, details);

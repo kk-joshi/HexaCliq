@@ -1,15 +1,14 @@
 package com.hexaware.hexacliq.report;
 
+import com.hexaware.hexacliq.dao.IUserRepository;
 import com.hexaware.hexacliq.dto.Attendance;
 import com.hexaware.hexacliq.dto.CategoryEnum;
+import com.hexaware.hexacliq.dto.User;
 import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.HttpServletResponse;
-import org.apache.poi.ss.usermodel.BorderStyle;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.CellStyle;
-import org.apache.poi.ss.usermodel.Row;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.CellRangeAddress;
-import org.apache.poi.xssf.usermodel.XSSFColor;
 import org.apache.poi.xssf.usermodel.XSSFFont;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -17,44 +16,68 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoField;
+import java.time.temporal.TemporalAccessor;
+import java.time.temporal.TemporalQuery;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import static com.hexaware.hexacliq.utils.Constants.*;
+
+@Slf4j
 public class MonthlyReportExporter {
-    private static final String DATE_HEADER_FORMAT = "d-mmm";
+    private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("d-MMM");
+
+    private final IUserRepository userRepository;
     private final Map<Integer, List<Attendance>> attendanceMap;
     private final String month;
-    private final byte[] HEADER_COLOR1 = new byte[]{10, 125, 125};
-    private final String[] headers = {"Employee ID", "Employee Name", "Project", "Location"};
+    private final int[] counts = new int[CategoryEnum.values().length];
+
+    private final String[] headers = {"Sr.","Employee ID", "Employee Name", "Project", "Location"};
     private final XSSFWorkbook workbook;
+    private final AtomicInteger rowCount = new AtomicInteger();
     List<LocalDate> dates;
     private XSSFSheet sheet;
     private Map<Integer, LocalDate> dateMap;
 
-    public MonthlyReportExporter(Map<Integer, List<Attendance>> attendanceMap, String month) {
+    private Map<CategoryEnum, CellStyle> textStyleMap;
+    private Map<CategoryEnum, CellStyle> numericStyleMap;
+    private List<String> weekEnds;
+    private CellStyle numericStyle;
+
+    public MonthlyReportExporter(IUserRepository userRepository, Map<Integer, List<Attendance>> attendanceMap, String month) {
         workbook = new XSSFWorkbook();
+        this.userRepository = userRepository;
         this.attendanceMap = attendanceMap;
         this.month = month;
         populateDates();
     }
 
     public void export(HttpServletResponse response) throws IOException {
-        sheet = workbook.createSheet("Monthly Report - " + month);
+        createSheet("Monthly Report - " + month);
         writeHeaderLine();
         writeDataLines();
+        exportReport(response);
+    }
 
-        ServletOutputStream outputStream = response.getOutputStream();
-        workbook.write(outputStream);
-        workbook.close();
-        outputStream.close();
+    private void createSheet(String sheetName) {
+        sheet = workbook.createSheet(sheetName);
+    }
+
+    private void exportReport(HttpServletResponse response) throws IOException {
+        try(ServletOutputStream outputStream = response.getOutputStream()) {
+            workbook.write(outputStream);
+            workbook.close();
+        }
     }
 
     private void populateDates() {
         dateMap = new LinkedHashMap<>();
         dates = getMonthDates();
-        dateMap = dates.stream().collect(Collectors.toMap(LocalDate::getDayOfMonth, Function.identity(), (o, n) -> n, LinkedHashMap::new));
+        weekEnds = dates.stream().filter(d -> d.query(new IsWeekendQuery())).map(DATE_FORMATTER::format).collect(Collectors.toList());
+        dateMap = dates.stream().sorted().collect(Collectors.toMap(LocalDate::getDayOfMonth, Function.identity(), (o, n) -> n, LinkedHashMap::new));
     }
 
     private List<LocalDate> getMonthDates() {
@@ -66,6 +89,8 @@ public class MonthlyReportExporter {
             dates.add(fromDate);
             fromDate = fromDate.plusDays(1);
         }
+        dates.add(toDate);
+        dates.sort(Comparator.naturalOrder());
         return dates;
     }
 
@@ -80,79 +105,130 @@ public class MonthlyReportExporter {
     private void writeHeaderLine() {
         sheet.addMergedRegion(CellRangeAddress.valueOf("A1:AO1"));
         sheet.addMergedRegion(CellRangeAddress.valueOf("A2:AO2"));
-        Row title = sheet.createRow(0);
-        CellStyle titleStyle = workbook.createCellStyle();
-        titleStyle.setFont(getTitleFont());
-        titleStyle.setFont(getHeaderFont());
-        titleStyle.setBorderBottom(BorderStyle.DOUBLE);
-        titleStyle.setBorderLeft(BorderStyle.DOUBLE);
-        titleStyle.setBorderRight(BorderStyle.DOUBLE);
-        titleStyle.setBorderBottom(BorderStyle.DOUBLE);
-        createCell(title, 0, "Monthly Attendance Report for " + month, titleStyle);
+        sheet.addMergedRegion(CellRangeAddress.valueOf("A3:AO3"));
+        sheet.createRow(rowCount.getAndIncrement());
+        Row title = sheet.createRow(rowCount.getAndIncrement());
 
-        Row row = sheet.createRow(1);
+        CellStyle titleStyle = getHeaderStyle(getTitleFont());
+        titleStyle.setAlignment(HorizontalAlignment.LEFT);
+        createCell(title, 0, "Monthly Attendance Report for " + month, titleStyle);
+        sheet.createRow(rowCount.getAndIncrement());
+
+        Row header = sheet.createRow(rowCount.getAndIncrement());
+        CellStyle headerStyle = getHeaderStyle(getHeaderFont());
+        CellStyle headerWeekendStyle = getHeaderStyle(getWeekHeaderFont());
+        AtomicInteger cnt = new AtomicInteger();
+        Arrays.stream(headers).forEach(h -> createCell(header, cnt.getAndIncrement(), h, headerStyle));
+        dateMap.values().stream().map(DATE_FORMATTER::format).forEach(date -> {
+            CellStyle cellStyle = weekEnds.contains(date) ? headerWeekendStyle : headerStyle;
+            createCell(header, cnt.getAndIncrement(), date, cellStyle);
+        });
+
+        Arrays.stream(CategoryEnum.values()).map(CategoryEnum::getShortName).forEach(attendanceType -> createCell(header, cnt.getAndIncrement(), attendanceType, headerStyle));
+        createCell(header, cnt.getAndIncrement(), "Total", headerStyle);
+    }
+
+    private void writeDataLines() {
+        populateTextStyles();
+        numericStyle = getNumericStyle();
+        CellStyle textStyle = getNumericStyle();
+        textStyle.setAlignment(HorizontalAlignment.LEFT);
+        textStyle.setIndention((short) 1);
+
+        AtomicInteger srNo = new AtomicInteger(1);
+        attendanceMap.forEach((userId, attendanceData) -> {
+            resetCounts();
+            Row dataRow = sheet.createRow(rowCount.getAndIncrement());
+            AtomicInteger colCount = new AtomicInteger();
+            User user = userRepository.findById(userId).orElse(new User());
+            createCell(dataRow, colCount.getAndIncrement(), srNo.getAndIncrement(), numericStyle);
+            createCell(dataRow, colCount.getAndIncrement(), user.getEmpId(), textStyle);
+            createCell(dataRow, colCount.getAndIncrement(), user.getFirstName() + " " + user.getLastName(), textStyle);
+            createCell(dataRow, colCount.getAndIncrement(), "{project name}" , textStyle);
+            createCell(dataRow, colCount.getAndIncrement(), "{location}", textStyle);
+            dateMap.forEach((index, localDate) -> {
+                CategoryEnum category = attendanceData.stream().filter(a -> localDate.equals(a.getMarkedDate())).findAny().map(Attendance::getCategory).orElse(CategoryEnum.OTHER);
+                createCell(dataRow, colCount.getAndIncrement(), category.getShortName(), textStyleMap.get(category));
+                log.info("{} - {}", category.getShortName(),textStyleMap.get(category).getAlignment());
+                counts[category.ordinal()]++;
+            });
+            Arrays.stream(counts).forEach(count ->  createCell(dataRow, colCount.getAndIncrement(), count, numericStyle));
+            createCell(dataRow, colCount.getAndIncrement(),  Arrays.stream(counts).sum() , numericStyle);
+        });
+        sheet.createRow(rowCount.getAndIncrement());
+    }
+
+    private void resetCounts() {
+        Arrays.stream(CategoryEnum.values()).map(Enum::ordinal).forEach(index -> counts[index] = 0);
+    }
+
+    private void populateTextStyles() {
+        textStyleMap = Arrays.stream(CategoryEnum.values()).collect(Collectors.toMap(Function.identity(), this::getDataStyle));
+    }
+
+    private CellStyle getHeaderStyle(XSSFFont xssfFont) {
         CellStyle headerStyle = workbook.createCellStyle();
-        headerStyle.setFont(getHeaderFont());
-        headerStyle.setBorderBottom(BorderStyle.DOUBLE);
+        headerStyle.setFont(xssfFont);
+        headerStyle.setBorderTop(BorderStyle.DOUBLE);
         headerStyle.setBorderLeft(BorderStyle.DOUBLE);
         headerStyle.setBorderRight(BorderStyle.DOUBLE);
         headerStyle.setBorderBottom(BorderStyle.DOUBLE);
+        headerStyle.setAlignment(HorizontalAlignment.CENTER);
+        return headerStyle;
+    }
 
-        CellStyle dateStyle = workbook.createCellStyle();
-        dateStyle.setFont(getHeaderFont());
-        dateStyle.setBorderBottom(BorderStyle.DOUBLE);
-        dateStyle.setBorderLeft(BorderStyle.DOUBLE);
-        dateStyle.setBorderRight(BorderStyle.DOUBLE);
-        dateStyle.setBorderBottom(BorderStyle.DOUBLE);
-        dateStyle.setDataFormat(workbook.getCreationHelper().createDataFormat().getFormat(DATE_HEADER_FORMAT));
+    private CellStyle getDataStyle(CategoryEnum categoryEnum) {
+        CellStyle dataStyle = workbook.createCellStyle();
+        dataStyle.setFont(getDataLineFont(categoryEnum));
+        dataStyle.setBorderBottom(BorderStyle.THIN);
+        dataStyle.setBorderLeft(BorderStyle.THIN);
+        dataStyle.setBorderRight(BorderStyle.THIN);
+        dataStyle.setBorderTop(BorderStyle.THIN);
+        dataStyle.setAlignment(HorizontalAlignment.CENTER);
+        return dataStyle;
+    }
 
-        AtomicInteger cnt = new AtomicInteger();
-
-        Arrays.stream(headers).forEach(header -> createCell(row, cnt.getAndIncrement(), header, headerStyle));
-        dateMap.values().forEach(date -> createCell(row, cnt.getAndIncrement(), date, headerStyle));
-        Arrays.stream(CategoryEnum.values()).map(CategoryEnum::getShortName).forEach(attendanceType -> createCell(row, cnt.getAndIncrement(), attendanceType, headerStyle));
+    private CellStyle getNumericStyle() {
+        CellStyle dataStyle = workbook.createCellStyle();
+        dataStyle.setFont(getDataLineFont(CategoryEnum.FULL_DAY));
+        dataStyle.setBorderBottom(BorderStyle.THIN);
+        dataStyle.setBorderLeft(BorderStyle.THIN);
+        dataStyle.setBorderRight(BorderStyle.THIN);
+        dataStyle.setBorderTop(BorderStyle.THIN);
+        dataStyle.setAlignment(HorizontalAlignment.RIGHT);
+        return dataStyle;
     }
 
     private XSSFFont getTitleFont() {
         XSSFFont font = workbook.createFont();
         font.setBold(true);
-        font.setFontHeight(25);
+        font.setFontHeight(20);
+        font.setColor(COLOR_OLIVE);
         return font;
     }
 
     private XSSFFont getHeaderFont() {
         XSSFFont font = workbook.createFont();
         font.setBold(true);
-        font.setFontHeight(16);
-        font.setColor(new XSSFColor(HEADER_COLOR1));
+        font.setFontHeight(11);
+        font.setColor(COLOR_NAVY);
         return font;
     }
 
-    private void writeDataLines() {
-        AtomicInteger rowCount = new AtomicInteger(2);
-        CellStyle style = workbook.createCellStyle();
+    private XSSFFont getWeekHeaderFont() {
         XSSFFont font = workbook.createFont();
-        font.setFontHeight(14);
-        style.setFont(font);
+        font.setBold(true);
+        font.setFontHeight(11);
+        font.setColor(COLOR_MAROON);
+        return font;
+    }
 
-        attendanceMap.forEach((userId, attendanceData) -> {
-            Row row = workbook.createSheet().createRow(rowCount.getAndIncrement());
-            int colCount = 0;
-
-//            TODO: User object is coming as null. Need to fix it.
-//            User user = attendanceData.get(0).getUser();
-//            createCell(row, colCount++, user.getEmpId(), style);
-//            createCell(row, colCount++, user.getFirstName() + " " + user.getLastName(), style);
-            createCell(row, colCount++, "User-id " + attendanceData.get(0).getUserId(), style);
-            createCell(row, colCount++, "BR-Project " + attendanceData.get(0).getUserId(), style);
-            createCell(row, colCount++, "BR-Project", style);
-            createCell(row, colCount++, "Pune", style);
-            final int COL_OFF_SET = colCount;
-            dateMap.forEach((index, localDate) -> {
-                CategoryEnum category = attendanceData.stream().filter(a -> localDate.equals(a.getMarkedDate())).findAny().map(Attendance::getCategory).orElse(CategoryEnum.OTHER);
-                createCell(row, index + COL_OFF_SET, category.getShortName(), style);
-            });
-        });
+    private XSSFFont getDataLineFont(CategoryEnum category) {
+        XSSFFont font = workbook.createFont();
+        font.setBold(false);
+        font.setFontHeight(10);
+        font.setColor(category.getColor());
+        return font;
     }
 
     private void createCell(Row row, int columnCount, Object value, CellStyle style) {
@@ -163,8 +239,14 @@ public class MonthlyReportExporter {
         } else if (value instanceof Boolean) {
             cell.setCellValue((Boolean) value);
         } else {
-            cell.setCellValue((String) value);
+            cell.setCellValue(String.valueOf(value));
         }
         cell.setCellStyle(style);
+    }
+    static class IsWeekendQuery implements TemporalQuery<Boolean> {
+        @Override
+        public Boolean queryFrom(TemporalAccessor temporal) {
+            return temporal.get(ChronoField.DAY_OF_WEEK) >= 6;
+        }
     }
 }
