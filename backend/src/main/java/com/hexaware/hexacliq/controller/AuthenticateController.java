@@ -1,8 +1,10 @@
 package com.hexaware.hexacliq.controller;
 
 import com.hexaware.hexacliq.config.JwtUtil;
-import com.hexaware.hexacliq.dao.RoleRepository;
-import com.hexaware.hexacliq.dto.*;
+import com.hexaware.hexacliq.dao.IRoleRepository;
+import com.hexaware.hexacliq.dto.JwtRequest;
+import com.hexaware.hexacliq.dto.JwtResponse;
+import com.hexaware.hexacliq.dto.User;
 import com.hexaware.hexacliq.utils.API_Constants;
 import com.hexaware.hexacliq.utils.Constants;
 import lombok.extern.slf4j.Slf4j;
@@ -31,7 +33,7 @@ public class AuthenticateController {
     @Autowired
     private UserDetailsService userDetailsService;
     @Autowired
-    private RoleRepository roleRepository;
+    private IRoleRepository roleRepository;
     @Autowired
     private JwtUtil jwtUtil;
     @Autowired

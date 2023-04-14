@@ -133,7 +133,6 @@ public class MonthlyReportExporter {
         numericStyle = getNumericStyle();
         CellStyle textStyle = getNumericStyle();
         textStyle.setAlignment(HorizontalAlignment.LEFT);
-        textStyle.setIndention((short) 1);
 
         AtomicInteger srNo = new AtomicInteger(1);
         attendanceMap.forEach((userId, attendanceData) -> {

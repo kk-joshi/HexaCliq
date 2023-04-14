@@ -1,6 +1,6 @@
 package com.hexaware.hexacliq;
 
-import com.hexaware.hexacliq.dao.RoleRepository;
+import com.hexaware.hexacliq.dao.IRoleRepository;
 import com.hexaware.hexacliq.dto.User;
 import com.hexaware.hexacliq.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +18,7 @@ public class HexaCliQApplication implements CommandLineRunner {
     UserService userService;
 
     @Autowired
-    RoleRepository roleRepository;
+    IRoleRepository roleRepository;
 
     @Autowired
     private PasswordEncoder bCryptPasswordEncoder;
@@ -29,26 +29,6 @@ public class HexaCliQApplication implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-//		User user1 = new User();
-//		user1.setUserName("KedarJ");
-//		user1.setFirstName("Kedar");
-//		user1.setLastName("Joshi");
-//		user1.setPassword(bCryptPasswordEncoder.encode("Kedar@123"));
-//		user1.setEmail("Kedark@hexaware.com");
-//		user1.setEnabled(true);
-//		user1.setProfile("CONSULTANT");
-//		user1.setPhone("9890406123");
-//		user1.setEmpId(72115);
-//		List.of(user1).forEach( user -> {
-//			Role role = roleRepository.getById(12L);
-//			UserRole userRole = new UserRole();
-//			userRole.setRole(role);
-//			userRole.setUser(user);
-//
-//			Set<UserRole> userRoles = new HashSet<>(List.of(userRole));
-//			User u = userService.creatUser(user, userRoles);
-//			System.out.println("User Created "+ u.getFirstName());
-//		});
     }
 
     private List<User> getUsers() {
