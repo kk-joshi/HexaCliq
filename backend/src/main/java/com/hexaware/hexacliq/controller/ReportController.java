@@ -1,6 +1,7 @@
 package com.hexaware.hexacliq.controller;
 
 
+import com.hexaware.hexacliq.dao.IUserRepository;
 import com.hexaware.hexacliq.dto.Attendance;
 import com.hexaware.hexacliq.report.MonthlyReportExporter;
 import com.hexaware.hexacliq.service.AttendanceService;
@@ -19,6 +20,10 @@ public class ReportController {
     @Autowired
     AttendanceService attendanceService;
 
+    @Autowired
+    IUserRepository userRepository;
+
+
     @GetMapping("excel/{month}")
     public void exportToExcel(HttpServletResponse response, @PathVariable("month") String month) throws IOException {
         response.setContentType("application/octet-stream");
@@ -26,7 +31,7 @@ public class ReportController {
         String headerValue = "attachment; filename=Monthly-Attendance-Report-" + month + ".xlsx";
         response.setHeader(headerKey, headerValue);
         Map<Integer, List<Attendance>> attendances = attendanceService.getMarkedAttendance(month);
-        new MonthlyReportExporter(attendances, month).export(response);
+        new MonthlyReportExporter(userRepository, attendances, month).export(response);
     }
 
 }

@@ -1,7 +1,7 @@
 package com.hexaware.hexacliq.service;
 
 import com.hexaware.hexacliq.dao.IUserRepository;
-import com.hexaware.hexacliq.dao.RoleRepository;
+import com.hexaware.hexacliq.dao.IRoleRepository;
 import com.hexaware.hexacliq.dto.User;
 import com.hexaware.hexacliq.dto.UserDto;
 import com.hexaware.hexacliq.dto.UserRole;
@@ -23,7 +23,7 @@ public class UserService implements UserDetailsService {
     @Autowired
     IUserRepository userRepository;
     @Autowired
-    private RoleRepository roleRepository;
+    private IRoleRepository roleRepository;
 
     @Transactional
     public User saveUser(UserDto user) {
@@ -43,22 +43,13 @@ public class UserService implements UserDetailsService {
 
     public User creatUser(User user, Set<UserRole> userRoles) {
 
-//        User userLocal = this.userRepository.findByUserName(user.getUsername()).get();
-//
-//        if (userLocal != null) {
-//            throw new UserFoundException();
-//        } else {
-
         userRoles.forEach(rl -> {
             roleRepository.save(rl.getRole());
         });
 
         user.getUserRoles().addAll(userRoles);
 
-        User userLocal = userRepository.save(user);
-
-//        }
-        return userLocal;
+        return userRepository.save(user);
     }
 
     public boolean deleteUserByUserId(Integer userId) {

@@ -1,11 +1,15 @@
 package com.hexaware.hexacliq.dto;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.Set;
 
 @Entity
+@Getter
+@Setter
 @Table(name = "client_master")
 public class Client {
     @Id
@@ -28,10 +32,10 @@ public class Client {
     private String secondaryContact;
 
     @Column(name = "created_time")
-    private Date createdTime;
+    private LocalDate createdTime;
 
     @Column(name = "modified_time")
-    private Date modifiedTime;
+    private LocalDate modifiedTime;
 
     @Column(name = "created_by")
     private String createdBy;

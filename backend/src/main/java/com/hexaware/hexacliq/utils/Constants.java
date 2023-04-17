@@ -1,5 +1,7 @@
 package com.hexaware.hexacliq.utils;
 
+import org.apache.poi.xssf.usermodel.XSSFColor;
+
 public class Constants {
 
     public final static String UNAUTHORIZED_SERVICE = "Unauthorized : Service";
@@ -24,6 +26,12 @@ public class Constants {
     public final static String INVALID_REQUEST = "Invalid Request";
     public final static String USER_NAME_ALREADY_EXIST = "User Name Already Exist Try With Diffrent User Name !!!";
     public final static String NORMAL = "NORMAL";
+
+    public final static XSSFColor COLOR_MAROON = new XSSFColor(new byte[]{125, 0, 0});
+    public final static XSSFColor COLOR_PURPLE = new XSSFColor(new byte[]{125, 0, 125});
+    public final static XSSFColor COLOR_OLIVE = new XSSFColor(new byte[]{125, 125, 0});
+    public final static XSSFColor COLOR_NAVY = new XSSFColor(new byte[]{0, 0, 125});
+    public final static XSSFColor COLOR_GRAY = new XSSFColor(new byte[]{80,80,80});
 
     private Constants() {
     }
