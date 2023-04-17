@@ -22,11 +22,15 @@ import { RegisterComponent } from './pages/register/register.component';
 import { ContactComponent } from './pages/contact/contact.component';
 import { WelcomeComponent } from './pages/welcome/welcome.component';
 import { AttendanceComponent } from './pages/attendance/attendance.component';
-import { DatePipe } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common';
 // import { CookieService } from 'ngx-cookie-service';
 import { HttpIntercepterServiceService } from './pages/http-intercepter-service.service';
-import { FormsModule } from '@angular/forms';
-
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { CreateClientComponent } from './pages/create-client/create-client.component';
+import { CreateProjectComponent } from './pages/create-project/create-project.component';
+import {MatNativeDateModule} from '@angular/material/core';
+import {MatDatepickerModule} from '@angular/material/datepicker';
+import {MatInputModule} from '@angular/material/input';
 
 const routes: Routes = [{ path: '', component: HomePageComponent },
 { path: 'logout-user', component: LogOutComponent },
@@ -34,7 +38,10 @@ const routes: Routes = [{ path: '', component: HomePageComponent },
 { path: 'register', component: RegisterComponent },
 { path: 'contact-us', component: ContactComponent },
 { path: 'attendance', component: AttendanceComponent },
-{ path: '**', component: WelcomeComponent }
+{ path: 'client', component: CreateClientComponent },
+{ path: 'project', component: CreateProjectComponent },
+{ path: '**', component: WelcomeComponent },
+
 ];
 
 @NgModule({
@@ -45,7 +52,11 @@ const routes: Routes = [{ path: '', component: HomePageComponent },
     HeaderComponent,
     FooterComponent,
     NavComponent,
-    MessagesComponent
+    MessagesComponent,
+    CreateClientComponent,
+    CreateProjectComponent,
+    
+  
   ],
   imports: [
     BrowserModule,
@@ -53,12 +64,17 @@ const routes: Routes = [{ path: '', component: HomePageComponent },
     HttpClientModule,
     ProductsModule,
     FormsModule,
+    ReactiveFormsModule,
+    CommonModule,
     CalendarModule,
     AccordionModule,
     BrowserAnimationsModule,
     UiModule,
     OrdersModule,
-    ToastModule
+    ToastModule,
+    MatNativeDateModule,
+    MatDatepickerModule,
+    MatInputModule,
   ],
   providers: [DatePipe, MessageService,
     { provide: HTTP_INTERCEPTORS, useClass: HttpIntercepterServiceService, multi: true }],

@@ -1,0 +1,42 @@
+
+<div>
+    <h2>Client Form</h2>    
+    <form [formGroup]="client_form" (ngSubmit)="onSubmit(clientform)" #clientform="ngForm">
+       
+        <div class="row">
+        <div class="col-sm-3 form-group">
+       
+        <label for="clientName">
+          Client Name
+           </label>
+        <input id="clientName"  class="form-control" type="text" formControlName="clientName">
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-3 form-group">
+        <label for="emailAdrress">
+         Email Adresss
+        </label>
+        <input id="emailAdrress"  class="form-control" type="text" formControlName="emailAdrress">
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-3 form-group">
+        <label for="primaryContact">
+         Primary Contact
+        </label>
+        <input id="primaryContact"  class="form-control" type="text" formControlName="primaryContact">
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-3 form-group">
+        <label for="secondaryContact">
+         Secondary Contact
+        </label>
+        <input id="secondaryContact"  class="form-control" type="text" formControlName="secondaryContact">
+      </div>
+    </div>
+      <button type="submit" class="btn btn-success">Submit</button>
+    </form>
+    </div>
+    

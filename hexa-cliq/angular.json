@@ -17,7 +17,7 @@
             "tsConfig": "apps/ngshop/tsconfig.app.json",
             "aot": true,
             "assets": ["apps/ngshop/src/favicon.ico", "apps/ngshop/src/assets"],
-            "styles": ["apps/ngshop/src/styles.scss"],
+            "styles": ["./node_modules/@angular/material/prebuilt-themes/indigo-pink.css", "apps/ngshop/src/styles.scss"],
             "scripts": []
           },
           "configurations": {
@@ -311,6 +311,7 @@
     }
   },
   "cli": {
+    "analytics": "8ff788f8-c913-4f4d-a65c-3b23ed49841b",
     "defaultCollection": "@nrwl/angular"
   },
   "schematics": {
