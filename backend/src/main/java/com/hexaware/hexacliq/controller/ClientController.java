@@ -1,5 +1,6 @@
 package com.hexaware.hexacliq.controller;
 
+import com.hexaware.hexacliq.dao.IClientRepository;
 import com.hexaware.hexacliq.dto.Client;
 import com.hexaware.hexacliq.dto.User;
 import com.hexaware.hexacliq.exception.DataNotFoundException;
@@ -12,6 +13,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @RestController
 @RequestMapping("/clients")
@@ -21,6 +23,9 @@ public class ClientController {
 
     @Autowired
     ClientService clientService;
+
+    @Autowired
+    IClientRepository clientRepository;
 
     @PostMapping
     public ResponseEntity<Object> createClient(@RequestBody Client client, Authentication authentication) {
@@ -45,6 +50,12 @@ public class ClientController {
         Client client = clientService.findById(clientId)
                 .orElseThrow(() -> new DataNotFoundException("Client not found"));
         return new ResponseEntity<>(client, HttpStatus.CREATED);
+    }
+
+    @GetMapping
+    public ResponseEntity<Object> findClient() {
+        List<Client> clients = clientRepository.findAll();
+        return new ResponseEntity<>(clients, HttpStatus.CREATED);
     }
 
 }
