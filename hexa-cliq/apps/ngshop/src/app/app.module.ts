@@ -21,6 +21,7 @@ import { LogOutComponent } from './pages/log-out/log-out.component';
 import { RegisterComponent } from './pages/register/register.component';
 import { ContactComponent } from './pages/contact/contact.component';
 import { WelcomeComponent } from './pages/welcome/welcome.component';
+
 import { AttendanceComponent } from './pages/attendance/attendance.component';
 import { CommonModule, DatePipe } from '@angular/common';
 // import { CookieService } from 'ngx-cookie-service';
@@ -31,15 +32,18 @@ import { CreateProjectComponent } from './pages/create-project/create-project.co
 import {MatNativeDateModule} from '@angular/material/core';
 import {MatDatepickerModule} from '@angular/material/datepicker';
 import {MatInputModule} from '@angular/material/input';
+import { ReportComponent } from './pages/Reports/reports.component';
 
-const routes: Routes = [{ path: '', component: HomePageComponent },
+const routes: Routes = [
+  { path: 'login', component: RegisterComponent },
+  { path: 'home', component: HomePageComponent },
 { path: 'logout-user', component: LogOutComponent },
-{ path: 'login', component: RegisterComponent },
 { path: 'register', component: RegisterComponent },
 { path: 'contact-us', component: ContactComponent },
 { path: 'attendance', component: AttendanceComponent },
 { path: 'client', component: CreateClientComponent },
 { path: 'project', component: CreateProjectComponent },
+{ path: 'report', component: ReportComponent },
 { path: '**', component: WelcomeComponent },
 
 ];
@@ -55,6 +59,7 @@ const routes: Routes = [{ path: '', component: HomePageComponent },
     MessagesComponent,
     CreateClientComponent,
     CreateProjectComponent,
+    ReportComponent,
     
   
   ],

@@ -1,0 +1,9 @@
+
+<h2>Reports</h2>
+<ui-banner></ui-banner>
+<p-calendar [(ngModel)]="months" view="month" dateFormat="mm/yy" [readonlyInput]="true"></p-calendar>
+
+
+<p-button label="View Report"
+(click)="viewReports()"
+></p-button>

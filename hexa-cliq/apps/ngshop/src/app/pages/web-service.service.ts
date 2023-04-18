@@ -45,6 +45,8 @@ export class WebServiceService {
   verifyEmailUrl = this.hostUrl + `verify-email/`;
   resendVerificationEmailUrl = this.hostUrl + `resend-verification-email`;
   inviteUserUrl = this.hostUrl + `refer-a-friend`;
+  getReportsUrl = this.hostUrl + 'get-reports';
+
 
   constructor(private httpClient: HttpClient, private storageService: StorageServiceService) { }
 
@@ -95,6 +97,12 @@ export class WebServiceService {
   getAttendance(date: string) {
     this.storageService.showLoader();
     return this.httpClient.get(this.getProfileUrl + '?month=' + date);
+  }
+
+  
+  getReports(formattedMonths : string) {
+    this.storageService.showLoader();
+    return this.httpClient.get(this.getReportsUrl);
   }
 
   markAttendance(attendanceDetails: any) {
