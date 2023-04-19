@@ -34,8 +34,21 @@ import {MatDatepickerModule} from '@angular/material/datepicker';
 import {MatInputModule} from '@angular/material/input';
 import { ReportComponent } from './pages/Reports/reports.component';
 
+import { ProfileComponent } from './pages/profile/profile.component';
+import { authAuthInterceptorProvider } from './service/auth.interceptor';
+
+
+import { SigupComponent } from './pages/sigup/sigup.component';
+import { LoginComponent } from './pages/login/login.component';
+import {MatFormFieldModule} from '@angular/material/form-field';
+import {MatListModule} from '@angular/material/list';
+import {MatTableModule} from '@angular/material/table';
+import {MatSlideToggleModule} from '@angular/material/slide-toggle';
+import {MatSelectModule} from '@angular/material/select';
+import {MatButtonModule} from '@angular/material/button'
+
 const routes: Routes = [
-  { path: 'login', component: RegisterComponent },
+  { path: 'login', component: LoginComponent },
   { path: 'home', component: HomePageComponent },
 { path: 'logout-user', component: LogOutComponent },
 { path: 'register', component: RegisterComponent },
@@ -60,8 +73,11 @@ const routes: Routes = [
     CreateClientComponent,
     CreateProjectComponent,
     ReportComponent,
+    SigupComponent,
+    LoginComponent,
+    ProfileComponent,
+    authAuthInterceptorProvider,
     
-  
   ],
   imports: [
     BrowserModule,
@@ -80,8 +96,14 @@ const routes: Routes = [
     MatNativeDateModule,
     MatDatepickerModule,
     MatInputModule,
+    MatListModule,
+    MatTableModule,
+    MatSlideToggleModule,
+    MatSelectModule,
+    MatButtonModule,MatFormFieldModule
   ],
-  providers: [DatePipe, MessageService,
+
+  providers: [DatePipe, MessageService,authAuthInterceptorProvider
     { provide: HTTP_INTERCEPTORS, useClass: HttpIntercepterServiceService, multi: true }],
   bootstrap: [AppComponent]
 })
